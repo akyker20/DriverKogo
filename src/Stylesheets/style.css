@@ -1,0 +1,22 @@
+.numPassengersButton {
+	-fx-padding: 30px 69px 30px 69px;
+	-fx-font-size: 100px;
+}
+
+
+#NumStudentsLabel {
+	-fx-font-size: 20px;
+	-fx-padding: 5px;
+}
+
+#ButtonHolder {
+	-fx-alignment: CENTER;
+	
+
+}
+
+
+
+
+
+
