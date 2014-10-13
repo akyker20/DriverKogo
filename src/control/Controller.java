@@ -53,6 +53,20 @@ public class Controller extends Application {
 
 	public void completedVideo(Video videoCompleted) {
 		videoCompleted.subtractViews(myNumPassengers);
-		
+	}
+	
+	
+	/**
+	 * Method used for debugging.
+	 */
+	private void printVideoList(){
+		for(int i = 0; i < myVideoList.size(); i++){
+			System.out.println("Video---------------");
+			System.out.println("company: " + myVideoList.get(i).getMyCompany());
+			System.out.println("name: " + myVideoList.get(i).getMyName());
+			System.out.println("length: " + myVideoList.get(i).getMyLength());
+			System.out.println("plays remaining: " + myVideoList.get(i).getMyPlaysRemaining());
+			System.out.println();
+		}
 	}
 }
