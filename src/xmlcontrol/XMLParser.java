@@ -28,25 +28,19 @@ public class XMLParser extends DefaultHandler {
 	public static final String PLAYS_REMAINING = "playsRemaining";
 	public static final String COMPANY = "company";
 	public static final String TITLE = "title";
-	
 
-	private static final String MASTER_PATH = "./src/xml/master_info.xml";
 
-	private ArrayList<Video> myVideoList;
 	private Map<Video, Node> myVideoNodeMap;
+	private Document myDocument;
 
-	public XMLParser(ArrayList<Video> list) 
+	public XMLParser(Document document) 
 			throws ParserConfigurationException, SAXException, IOException{
-		myVideoList = list;
 		myVideoNodeMap = new HashMap<Video, Node>();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document document = builder.parse(new FileInputStream(new File(MASTER_PATH)));
-		buildVideos(document.getDocumentElement());
+		myDocument = document;
 	}
 
-	private void buildVideos(Element documentElement) {
-		NodeList videoNodes = documentElement.getChildNodes();
+	public void buildVideos(ArrayList<Video> videoList) {
+		NodeList videoNodes = myDocument.getDocumentElement().getChildNodes();
 		for(int i = 0; i < videoNodes.getLength(); i++){
 			Node videoNode = videoNodes.item(i);
 			if (videoNode instanceof Element && videoNode.getNodeName().equalsIgnoreCase("video")) {
@@ -56,7 +50,7 @@ public class XMLParser extends DefaultHandler {
 				String name = getAttributeValue(attributes, TITLE);
 				String company = getAttributeValue(attributes, COMPANY);
 				Video video = new Video(company, name, playsRemaining, length);
-				myVideoList.add(video);
+				videoList.add(video);
 				myVideoNodeMap.put(video, videoNode);
 			}
 		}
@@ -72,17 +66,7 @@ public class XMLParser extends DefaultHandler {
 		return attributes.getNamedItem(attrName).getNodeValue();
 	}
 
-	@Override
-	public void startElement (String uri,
-			String localName,
-			String elementName,
-			Attributes attributes) throws SAXException {
-		if (elementName.equalsIgnoreCase("video")) {
-			String title = attributes.getValue("title");
-			String company = attributes.getValue("company");
-			int length = Integer.parseInt(attributes.getValue("length"));
-			int numPlaysRemaining = Integer.parseInt(attributes.getValue("playsRemaining"));
-			myVideoList.add(new Video(company, title, numPlaysRemaining, length));
-		}
+	public Map<Video, Node> getVideoNodeMap() {
+		return myVideoNodeMap;
 	}
 }
