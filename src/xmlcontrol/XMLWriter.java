@@ -24,8 +24,9 @@ import video.Video;
 
 public class XMLWriter {
 
-	private static final String DRIVING_PATH = "./src/xml/driver_info.xml";
 	private static final String PLAYS = "plays";
+	private static final String STATUS = "status";
+	private static final String INITIALIZED = "initialized";
 	
 	private Transformer myTransformer;
 	private Document myDocument;
@@ -45,16 +46,19 @@ public class XMLWriter {
 	 * @throws TransformerException 
 	 */
 	public void initializeMasterFile(ArrayList<Video> lists) throws TransformerException{
+		Element statusTag = (Element) myDocument.getDocumentElement().getElementsByTagName(STATUS).item(0);
+		statusTag.setAttribute(INITIALIZED, "true");
 		for(Node videoNode:myVideoNodeMap.values()){
 			((Element) videoNode).setAttribute(PLAYS, "0");
-			((Element) videoNode).removeAttribute(XMLParser.LENGTH);
-			((Element) videoNode).removeAttribute(XMLParser.PLAYS_REMAINING);
 		}
-		writeFile(myDocument, new File(DRIVING_PATH));
+		writeFile(myDocument, new File(XMLController.MASTER_PATH));
 	}
 	
-	public void editDrivingStats(Video video) throws TransformerException{
-
+	public void editDrivingStats(Video video, int numPassengers) throws TransformerException{
+		Element videoElement = (Element) myVideoNodeMap.get(video);
+		int previousPlays = Integer.parseInt(videoElement.getAttribute(PLAYS));
+		videoElement.setAttribute(PLAYS, ""+(previousPlays+numPassengers));
+		writeFile(myDocument, new File(XMLController.MASTER_PATH));
 	}	
 
 	private void writeFile(Document document, File xmlFile) throws TransformerException {

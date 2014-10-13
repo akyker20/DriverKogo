@@ -25,9 +25,10 @@ import video.Video;
 public class XMLParser extends DefaultHandler {
 	
 	public static final String LENGTH = "length";
-	public static final String PLAYS_REMAINING = "playsRemaining";
+	public static final String AVAILABLE_PLAYS = "availablePlays";
 	public static final String COMPANY = "company";
 	public static final String TITLE = "title";
+	public static final String VIDEO = "video";
 
 
 	private Map<Video, Node> myVideoNodeMap;
@@ -40,13 +41,14 @@ public class XMLParser extends DefaultHandler {
 	}
 
 	public void buildVideos(ArrayList<Video> videoList) {
-		NodeList videoNodes = myDocument.getDocumentElement().getChildNodes();
+		Element root = myDocument.getDocumentElement();
+		NodeList videoNodes = root.getElementsByTagName(VIDEO);
 		for(int i = 0; i < videoNodes.getLength(); i++){
 			Node videoNode = videoNodes.item(i);
 			if (videoNode instanceof Element && videoNode.getNodeName().equalsIgnoreCase("video")) {
 				NamedNodeMap attributes = videoNode.getAttributes();
 				int length = Integer.parseInt(getAttributeValue(attributes, LENGTH));
-				int playsRemaining = Integer.parseInt(getAttributeValue(attributes, PLAYS_REMAINING));
+				int playsRemaining = Integer.parseInt(getAttributeValue(attributes, AVAILABLE_PLAYS));
 				String name = getAttributeValue(attributes, TITLE);
 				String company = getAttributeValue(attributes, COMPANY);
 				Video video = new Video(company, name, playsRemaining, length);

@@ -2,6 +2,8 @@ package gui.scenes;
 
 import java.io.File;
 
+import javax.xml.transform.TransformerException;
+
 import video.Video;
 import control.Controller;
 import javafx.scene.Scene;
@@ -40,7 +42,12 @@ public class VideoScene extends Scene {
 		myMediaPlayer.setOnEndOfMedia(new Runnable(){
 			@Override
 			public void run() {
-				myControl.completedVideo(video);
+				try {
+					myControl.completedVideo(video);
+				} catch (TransformerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				myControl.playAnotherVideo();			
 			}
 		});

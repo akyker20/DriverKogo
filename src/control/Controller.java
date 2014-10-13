@@ -1,6 +1,8 @@
 package control;
 import java.util.ArrayList;
 
+import javax.xml.transform.TransformerException;
+
 import gui.GUIController;
 import video.Video;
 import video.VideoSelector;
@@ -52,8 +54,9 @@ public class Controller extends Application {
 		return playableVideos().length > 0;
 	}
 
-	public void completedVideo(Video videoCompleted) {
+	public void completedVideo(Video videoCompleted) throws TransformerException {
 		videoCompleted.subtractViews(myNumPassengers);
+		myXMLController.updateXML(videoCompleted, myNumPassengers);
 	}
 	
 	
