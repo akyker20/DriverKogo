@@ -70,8 +70,17 @@ public class Controller extends Application {
 	}
 
 	public Object[] playableVideos(){
-		return myVideoList.stream()
+		Object[] playableUnplayedVideos = myVideoList.stream()
 				.filter(Video::canPlay).toArray();
+		//if there are videos that have not been played this ride
+		//and have available views.
+		if (playableUnplayedVideos.length > 0)
+			return playableUnplayedVideos;
+		//if there are videos that have available views.
+		else{
+			return myVideoList.stream()
+					.filter(Video::hasPlaysRemaining).toArray();
+		}
 	}
 
 	public boolean canPlayVideos() {
@@ -83,23 +92,11 @@ public class Controller extends Application {
 		myXMLController.updateXML(videoCompleted, myNumPassengers);
 	}
 
-
-	/**
-	 * Method used for debugging.
-	 */
-	private void printVideoList(){
-		for(int i = 0; i < myVideoList.size(); i++){
-			System.out.println("Video---------------");
-			System.out.println("company: " + myVideoList.get(i).getMyCompany());
-			System.out.println("name: " + myVideoList.get(i).getMyName());
-			System.out.println("length: " + myVideoList.get(i).getMyLength());
-			System.out.println("plays: " + myVideoList.get(i).getMyPlays());
-			System.out.println("Max plays: " + myVideoList.get(i).getMyMaxPlays());
-			System.out.println();
-		}
-	}
-
 	public void finishDriving() {
 		myGUIController.showFinishedDrivingScreen();
+	}
+
+	public void endRide() {
+		myGUIController.showStartRideScreen();
 	}
 }

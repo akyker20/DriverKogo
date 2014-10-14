@@ -64,7 +64,6 @@ public class DragFileScene extends Scene {
 					String filePath = null;
 					for (File file:db.getFiles()) {
 						filePath = file.getAbsolutePath();
-						System.out.println(fileName);
 						if(filePath.contains(fileName)){
 							try {
 								control.initializeDrivingEnvironment(file);

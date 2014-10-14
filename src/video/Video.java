@@ -8,6 +8,7 @@ public class Video {
 	private int myMaxPlays;
 	private int myLength;
 	private int myPlays;
+	private boolean alreadyPlayedThisRide;
 
 	public Video(String company, String name, int maxPlays, int length){
 		myCompany = company;
@@ -15,6 +16,7 @@ public class Video {
 		myMaxPlays = maxPlays;
 		myLength = length;
 		myPlays = 0;
+		alreadyPlayedThisRide = false;
 	}
 	
 	public Video(String company, String name, int playsCompleted, int maxPlays, int length){
@@ -38,14 +40,20 @@ public class Video {
 	}
 	
 	/**
-	 * @return true if the video has plays remaining.
+	 * @return true if the video has plays remaining and has not already
+	 * been played that ride.
 	 */
 	public boolean canPlay(){
+		return hasPlaysRemaining() && !alreadyPlayedThisRide;
+	}
+	
+	public boolean hasPlaysRemaining(){
 		return myPlays < myMaxPlays;
 	}
 	
 	public void addViews(int numPassengers){
 		myPlays += numPassengers;
+		alreadyPlayedThisRide = true;
 	}
 
 	public String getPath() {
@@ -58,5 +66,9 @@ public class Video {
 
 	public int getMyMaxPlays() {
 		return myMaxPlays;
+	}
+	
+	public void prepareForNewRide(){
+		alreadyPlayedThisRide = false;
 	}
 }

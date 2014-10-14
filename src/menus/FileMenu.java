@@ -1,7 +1,5 @@
 package menus;
 
-import javax.xml.transform.TransformerException;
-
 import control.Controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,15 +14,39 @@ import javafx.scene.control.MenuItem;
  */
 public class FileMenu extends Menu {
 	
+	private MenuItem myEndRideItem;
+	private MenuItem myFinishDrivingItem;
+	
     public FileMenu(Controller control){
         this.setText("File");
         
-        MenuItem finishDriving = new MenuItem("Finished Driving");
-        finishDriving.setOnAction(new EventHandler<ActionEvent>() {
+        myFinishDrivingItem = new MenuItem("Finished Driving");
+        myFinishDrivingItem.setDisable(true);
+        myFinishDrivingItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
             	control.finishDriving();
             }
-        });     
-        this.getItems().add(finishDriving);        
+        });   
+        
+        myEndRideItem = new MenuItem("Ride Completed");
+        myEndRideItem.setDisable(true);
+        myEndRideItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+            	control.endRide();
+            }
+        });    
+        
+        
+        this.getItems().addAll(myFinishDrivingItem, myEndRideItem);        
     }
+    
+    protected void enableFinishDrivingItem(){
+    	myFinishDrivingItem.setDisable(false);
+    }
+    
+    protected void enableEndRideItem(){
+    	myEndRideItem.setDisable(false);
+    }
+    
+    
 }

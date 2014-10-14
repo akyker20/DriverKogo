@@ -13,6 +13,7 @@ public class FinishedDrivingScene extends Scene {
 				+ " session. Please send Austin the file that was\n"
 				+ " saved to your desktop.");
 		pane.setCenter(label);
+		menu.enableFinishDrivingItem();
 		pane.setTop(menu);
 	}
 }
