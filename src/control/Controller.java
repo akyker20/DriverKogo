@@ -75,4 +75,8 @@ public class Controller extends Application {
 			System.out.println();
 		}
 	}
+
+	public void finishDriving() {
+		myGUIController.showFinishedDrivingScreen();
+	}
 }

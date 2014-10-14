@@ -2,8 +2,8 @@
 <driver>
 	<status initialized="true"/>
 	<videos>
-		<video company="Bali Hai" length="50" maxPlays="5" plays="6" title="1"/>
-		<video company="Jimmy Johns" length="50" maxPlays="10" plays="10" title="1"/>
+		<video company="Bali Hai" length="50" maxPlays="5" plays="5" title="1"/>
+		<video company="Jimmy Johns" length="50" maxPlays="10" plays="11" title="1"/>
 		<video company="Shooters" length="50" maxPlays="3" plays="4" title="1"/>
 	</videos>
 </driver>

@@ -1,5 +1,6 @@
 package gui.scenes;
 
+import menus.MenuFeature;
 import gui.GUIController;
 import control.Controller;
 import video.VideoSelector;
@@ -16,7 +17,7 @@ public class RideStarterScene extends Scene {
 	private Controller myControl;
     public static final String STYLESHEET_PACKAGE = "Stylesheets/";
 	
-	public RideStarterScene(BorderPane parent, Controller control) {
+	public RideStarterScene(BorderPane parent, Controller control, MenuFeature menu) {
 		super(parent, GUIController.SCREEN_WIDTH, GUIController.SCREEN_HEIGHT);
 		this.getStylesheets().add(STYLESHEET_PACKAGE + "style.css");
 		myControl = control;
@@ -28,6 +29,7 @@ public class RideStarterScene extends Scene {
 		label.setId("NumStudentsLabel");
 		container.getChildren().addAll(label, buttonHolder);
 		parent.setCenter(container);
+		parent.setTop(menu);
 	}
 
 	private Button makeButton(int numPassengers) {

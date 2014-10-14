@@ -1,6 +1,8 @@
 package gui;
 
+import menus.MenuFeature;
 import video.Video;
+import gui.scenes.FinishedDrivingScene;
 import gui.scenes.NotEnoughVideosScene;
 import gui.scenes.RideStarterScene;
 import gui.scenes.VideoScene;
@@ -19,15 +21,16 @@ public class GUIController {
 	private RideStarterScene myRideStarterScene;
 	private VideoScene myVideoScene;
 	private NotEnoughVideosScene myNotEnoughVideosScene;
+	private FinishedDrivingScene myFinishedDrivingScene;
 	private Stage myStage;
 	
 	public GUIController(Stage stage, Controller control){
 		myStage = stage;
 		myController = control;
 		myVideoScene = new VideoScene(new BorderPane(), myController);
-		
-		myRideStarterScene = new RideStarterScene(new BorderPane(), myController);
-		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane());
+		myRideStarterScene = new RideStarterScene(new BorderPane(), myController, new MenuFeature(control));
+		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane(), new MenuFeature(control));
+		myFinishedDrivingScene = new FinishedDrivingScene(new BorderPane(), new MenuFeature(control));
 		configureAndDisplayStage();
 	}
 		
@@ -54,5 +57,9 @@ public class GUIController {
 	public void notEnoughVideos() {
 		myStage.setScene(myNotEnoughVideosScene);
 		
+	}
+
+	public void showFinishedDrivingScreen() {
+		myStage.setScene(myFinishedDrivingScene);
 	}
 }
