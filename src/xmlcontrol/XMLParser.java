@@ -3,9 +3,14 @@ package xmlcontrol;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javafx.stage.FileChooser;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,7 +42,7 @@ public class XMLParser extends DefaultHandler {
 	private Map<Video, Node> myVideoNodeMap;
 	private Document myDocument;
 
-	public XMLParser(Document document, XMLController control) 
+	public XMLParser(Document document) 
 			throws ParserConfigurationException, SAXException, IOException{
 		myDocument = document;
 		myVideoNodeMap = new HashMap<Video, Node>();

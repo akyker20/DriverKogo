@@ -19,20 +19,21 @@ import video.Video;
 
 public class XMLController {
 	
-	protected static final String MASTER_PATH = "./src/xml/master_info.xml";
 	private static final String TRUE = "true";
 	private XMLWriter myWriter;
 	private Document myDocument;
 	
-	public XMLController(ArrayList<Video> videoList) throws ParserConfigurationException, FileNotFoundException, SAXException, IOException, TransformerException{
+	public XMLController(ArrayList<Video> videoList, File masterFile) 
+			throws ParserConfigurationException, FileNotFoundException, SAXException, 
+			IOException, TransformerException{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		myDocument = builder.parse(new FileInputStream(new File(MASTER_PATH)));
-		XMLParser xmlParser = new XMLParser(myDocument, this);
+		myDocument = builder.parse(new FileInputStream(masterFile));
 		
+		XMLParser xmlParser = new XMLParser(myDocument);	
 		boolean isFileInitialized = isFileInitialized();
 		xmlParser.buildVideos(videoList, isFileInitialized);
-		myWriter = new XMLWriter(myDocument, xmlParser.getVideoNodeMap());	
+		myWriter = new XMLWriter(myDocument, xmlParser.getVideoNodeMap(), masterFile);	
 		if(!isFileInitialized){
 			myWriter.initializeMasterFile(videoList);
 		}

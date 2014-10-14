@@ -27,8 +27,12 @@ public class XMLWriter {
 	private Transformer myTransformer;
 	private Document myDocument;
 	private Map<Video, Node> myVideoNodeMap;
+	private File myFile;
 
-	public XMLWriter(Document document, Map<Video, Node> videoNodeMap) throws FileNotFoundException, SAXException, IOException, ParserConfigurationException, TransformerConfigurationException{
+	public XMLWriter(Document document, Map<Video, Node> videoNodeMap, File file) 
+			throws FileNotFoundException, SAXException, IOException, 
+			ParserConfigurationException, TransformerConfigurationException{
+		myFile = file;
 		myVideoNodeMap = videoNodeMap;
 		myDocument = document;
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -47,13 +51,13 @@ public class XMLWriter {
 		for(Node videoNode:myVideoNodeMap.values()){
 			((Element) videoNode).setAttribute(XMLParser.PLAYS, "0");
 		}
-		writeFile(myDocument, new File(XMLController.MASTER_PATH));
+		writeFile(myDocument, myFile);
 	}
 	
 	public void editDrivingStats(Video video, int numPassengers) throws TransformerException{
 		Element videoElement = (Element) myVideoNodeMap.get(video);
 		videoElement.setAttribute(XMLParser.PLAYS, ""+video.getMyPlays());
-		writeFile(myDocument, new File(XMLController.MASTER_PATH));
+		writeFile(myDocument, myFile);
 	}	
 
 	private void writeFile(Document document, File xmlFile) throws TransformerException {
