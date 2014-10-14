@@ -44,78 +44,16 @@ public class Controller extends Application {
 	public void start(Stage stage) throws Exception {
 		myStage = stage;
 		myVideoList = new ArrayList<Video>();
-		
-		 LocalDateTime now = LocalDateTime.now(); 
-	     String date = now.getMonthValue() + "_" + now.getDayOfMonth() + "_" + now.getYear();
-	     String fileName = "kogo_" + date + ".xml";
-
-		Group root = new Group();
-		Scene scene = new Scene(root, 551, 400);
-		Label label = new Label("Drop the kogo file here...");
-		label.setLayoutX(210);
-		label.setLayoutY(170);
-		root.getChildren().add(label);
-		scene.setOnDragOver(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				Dragboard db = event.getDragboard();
-				if (db.hasFiles()) {
-					event.acceptTransferModes(TransferMode.COPY);
-					scene.setFill(Color.LIGHTGREEN);
-				} else {
-					event.consume();
-				}
-			}
-		});
-		
-		scene.setOnDragExited(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				Dragboard db = event.getDragboard();
-				scene.setFill(Color.WHITE);
-			}
-		});
-
-		// Dropping over surface
-		scene.setOnDragDropped(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				Dragboard db = event.getDragboard();
-				boolean success = false;
-				if (db.hasFiles()) {
-					success = true;
-					String filePath = null;
-					for (File file:db.getFiles()) {
-						filePath = file.getAbsolutePath();
-						System.out.println(fileName);
-						if(filePath.contains(fileName)){
-							myFile = file;
-							try {
-								initializeDrivingEnvironment();
-							} catch (ParserConfigurationException
-									| SAXException | IOException
-									| TransformerException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					}
-				}
-				event.setDropCompleted(success);
-				event.consume();
-			}
-		});
-
-		stage.setScene(scene);
-		stage.show();
-
+		myGUIController = new GUIController(myStage, this);
 	}
 
-	protected void initializeDrivingEnvironment() throws FileNotFoundException, ParserConfigurationException, SAXException, IOException, TransformerException {
+	public void initializeDrivingEnvironment(File file) 
+			throws FileNotFoundException, ParserConfigurationException, 
+			SAXException, IOException, TransformerException {
+		myFile = file;
 		myXMLController = new XMLController(myVideoList, myFile);
-		myGUIController = new GUIController(myStage, this);
 		myVideoSelector = new VideoSelector(this);	
-		printVideoList();
+		myGUIController.configureDrivingEnvironment();
 	}
 
 	public void playVideo(int numPassengers){
