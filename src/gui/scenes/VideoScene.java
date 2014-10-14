@@ -43,6 +43,7 @@ public class VideoScene extends Scene {
 	private MenuFeature myMenuFeature;
 	private VBox myMenuContainer;
 	private GUIController myGUIController;
+	private boolean isMediaViewInitialized;
 	
 	
 	public VideoScene(BorderPane parent, Controller control, GUIController controller) {
@@ -53,14 +54,6 @@ public class VideoScene extends Scene {
 		myMediaView = new MediaView(myMediaPlayer);
 		myGUIController = controller;
 		
-		
-		 DoubleProperty width = myMediaView.fitWidthProperty();
-		 DoubleProperty height = myMediaView.fitHeightProperty();
-		    
-		 width.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "width"));
-		 height.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "height"));
-		    
-		 myMediaView.setPreserveRatio(true);
 		
 		parent.setCenter(myMediaView);
 		
@@ -114,6 +107,21 @@ public class VideoScene extends Scene {
 			}
 		});
 		myMediaView.setMediaPlayer(myMediaPlayer);
+		if(!isMediaViewInitialized){
+			initializeMediaViewSize();
+		}
 		myMediaPlayer.play();
+	}
+
+	private void initializeMediaViewSize() {
+		DoubleProperty width = myMediaView.fitWidthProperty();
+		 DoubleProperty height = myMediaView.fitHeightProperty();
+		 
+		 width.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "width"));
+		 height.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "height"));
+		    
+		 myMediaView.setPreserveRatio(true);
+		 
+		
 	}
 }
