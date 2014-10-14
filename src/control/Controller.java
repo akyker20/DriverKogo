@@ -30,6 +30,7 @@ public class Controller extends Application {
 		myXMLController = new XMLController(myVideoList);
 		myGUIController = new GUIController(stage, this);
 		myVideoSelector = new VideoSelector(this);	
+		printVideoList();
 	}
 	
 	public void playVideo(int numPassengers){
@@ -55,7 +56,7 @@ public class Controller extends Application {
 	}
 
 	public void completedVideo(Video videoCompleted) throws TransformerException {
-		videoCompleted.subtractViews(myNumPassengers);
+		videoCompleted.addViews(myNumPassengers);
 		myXMLController.updateXML(videoCompleted, myNumPassengers);
 	}
 	
@@ -69,7 +70,8 @@ public class Controller extends Application {
 			System.out.println("company: " + myVideoList.get(i).getMyCompany());
 			System.out.println("name: " + myVideoList.get(i).getMyName());
 			System.out.println("length: " + myVideoList.get(i).getMyLength());
-			System.out.println("plays remaining: " + myVideoList.get(i).getMyPlaysRemaining());
+			System.out.println("plays: " + myVideoList.get(i).getMyPlays());
+			System.out.println("Max plays: " + myVideoList.get(i).getMyMaxPlays());
 			System.out.println();
 		}
 	}

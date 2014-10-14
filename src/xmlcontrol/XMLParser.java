@@ -25,22 +25,25 @@ import video.Video;
 public class XMLParser extends DefaultHandler {
 	
 	public static final String LENGTH = "length";
-	public static final String AVAILABLE_PLAYS = "availablePlays";
+	public static final String MAX_PLAYS = "maxPlays";
 	public static final String COMPANY = "company";
 	public static final String TITLE = "title";
 	public static final String VIDEO = "video";
+	public static final String PLAYS = "plays";
+	public static final String STATUS = "status";
+	public static final String INITIALIZED = "initialized";
 
 
 	private Map<Video, Node> myVideoNodeMap;
 	private Document myDocument;
 
-	public XMLParser(Document document) 
+	public XMLParser(Document document, XMLController control) 
 			throws ParserConfigurationException, SAXException, IOException{
-		myVideoNodeMap = new HashMap<Video, Node>();
 		myDocument = document;
+		myVideoNodeMap = new HashMap<Video, Node>();
 	}
 
-	public void buildVideos(ArrayList<Video> videoList) {
+	public void buildVideos(ArrayList<Video> videoList, boolean fileAlreadyInitialized) {
 		Element root = myDocument.getDocumentElement();
 		NodeList videoNodes = root.getElementsByTagName(VIDEO);
 		for(int i = 0; i < videoNodes.getLength(); i++){
@@ -48,10 +51,17 @@ public class XMLParser extends DefaultHandler {
 			if (videoNode instanceof Element && videoNode.getNodeName().equalsIgnoreCase("video")) {
 				NamedNodeMap attributes = videoNode.getAttributes();
 				int length = Integer.parseInt(getAttributeValue(attributes, LENGTH));
-				int playsRemaining = Integer.parseInt(getAttributeValue(attributes, AVAILABLE_PLAYS));
+				int maxPlays = Integer.parseInt(getAttributeValue(attributes, MAX_PLAYS));
 				String name = getAttributeValue(attributes, TITLE);
 				String company = getAttributeValue(attributes, COMPANY);
-				Video video = new Video(company, name, playsRemaining, length);
+				Video video;
+				if(fileAlreadyInitialized){
+					int playsCompleted = Integer.parseInt(getAttributeValue(attributes, PLAYS));
+					video = new Video(company, name, playsCompleted, maxPlays, length);
+				}
+				else {
+					video = new Video(company, name, maxPlays, length);
+				}
 				videoList.add(video);
 				myVideoNodeMap.put(video, videoNode);
 			}

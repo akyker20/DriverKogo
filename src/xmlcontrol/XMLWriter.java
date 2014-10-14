@@ -23,10 +23,6 @@ import org.xml.sax.SAXException;
 import video.Video;
 
 public class XMLWriter {
-
-	private static final String PLAYS = "plays";
-	private static final String STATUS = "status";
-	private static final String INITIALIZED = "initialized";
 	
 	private Transformer myTransformer;
 	private Document myDocument;
@@ -46,18 +42,17 @@ public class XMLWriter {
 	 * @throws TransformerException 
 	 */
 	public void initializeMasterFile(ArrayList<Video> lists) throws TransformerException{
-		Element statusTag = (Element) myDocument.getDocumentElement().getElementsByTagName(STATUS).item(0);
-		statusTag.setAttribute(INITIALIZED, "true");
+		Element statusTag = (Element) myDocument.getDocumentElement().getElementsByTagName(XMLParser.STATUS).item(0);
+		statusTag.setAttribute(XMLParser.INITIALIZED, "true");
 		for(Node videoNode:myVideoNodeMap.values()){
-			((Element) videoNode).setAttribute(PLAYS, "0");
+			((Element) videoNode).setAttribute(XMLParser.PLAYS, "0");
 		}
 		writeFile(myDocument, new File(XMLController.MASTER_PATH));
 	}
 	
 	public void editDrivingStats(Video video, int numPassengers) throws TransformerException{
 		Element videoElement = (Element) myVideoNodeMap.get(video);
-		int previousPlays = Integer.parseInt(videoElement.getAttribute(PLAYS));
-		videoElement.setAttribute(PLAYS, ""+(previousPlays+numPassengers));
+		videoElement.setAttribute(XMLParser.PLAYS, ""+video.getMyPlays());
 		writeFile(myDocument, new File(XMLController.MASTER_PATH));
 	}	
 

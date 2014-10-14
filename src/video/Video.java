@@ -5,31 +5,30 @@ public class Video {
 
 	private String myCompany;
 	private String myName;
-	private int myPlaysRemaining;
+	private int myMaxPlays;
 	private int myLength;
+	private int myPlays;
 
-	/**
-	 * Video constructor
-	 * @param name
-	 * @param playsRemaining
-	 * @param length
-	 * @param company
-	 */
-	public Video(String company, String name, int playsRemaining, int length){
+	public Video(String company, String name, int maxPlays, int length){
 		myCompany = company;
 		myName = name;
-		myPlaysRemaining = playsRemaining;
+		myMaxPlays = maxPlays;
 		myLength = length;
+		myPlays = 0;
+	}
+	
+	public Video(String company, String name, int playsCompleted, int maxPlays, int length){
+		myCompany = company;
+		myName = name;
+		myMaxPlays = maxPlays;
+		myLength = length;
+		myPlays = playsCompleted;
 	}
 
 	public String getMyName() {
 		return myName;
 	}
-
-	public int getMyPlaysRemaining() {
-		return myPlaysRemaining;
-	}
-
+	
 	public int getMyLength() {
 		return myLength;
 	}
@@ -42,16 +41,22 @@ public class Video {
 	 * @return true if the video has plays remaining.
 	 */
 	public boolean canPlay(){
-		return myPlaysRemaining > 0;
+		return myPlays < myMaxPlays;
 	}
 	
-	public void subtractViews(int numPassengers){
-		System.out.print("Num views remaining reduced from " + myPlaysRemaining);
-		myPlaysRemaining -= numPassengers;
-		System.out.println(" to " + myPlaysRemaining);
+	public void addViews(int numPassengers){
+		myPlays += numPassengers;
 	}
 
 	public String getPath() {
 		return "./src/videos/" + myCompany.replaceAll(" ", "") + "_" + myName + ".mp4";
+	}
+
+	public int getMyPlays() {
+		return myPlays;
+	}
+
+	public int getMyMaxPlays() {
+		return myMaxPlays;
 	}
 }
