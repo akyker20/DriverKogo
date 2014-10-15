@@ -74,21 +74,14 @@ public class GUIController {
 	}
 	
 	/**
-	 * Makes the stage full screen. This method is called when the driver hits escape
-	 * to exit full screen and then hits SPACE to play the video again.
+	 * If the stage is not full screen already, it is made full screen and a hint
+	 * is displayed to driver reminding them how to pause a video and complete a ride.
 	 */
 	public void makeFullScreen() {
-		myStage.setFullScreenExitHint("Press spacebar to pause and complete ride");
-		myStage.setFullScreen(true);
-	}
-	
-	/**
-	 * Called when driver hits SPACE to play the video. If the stage is not
-	 * in full screen, then it is set to be full screen with makeFullScreen.
-	 * @return true if the stage is in full screen.
-	 */
-	public boolean isFullScreen(){
-		return myStage.isFullScreen();
+		if(!myStage.isFullScreen()){
+			myStage.setFullScreenExitHint("Press spacebar to pause and complete ride");
+			myStage.setFullScreen(true);
+		}
 	}
 
 	/**

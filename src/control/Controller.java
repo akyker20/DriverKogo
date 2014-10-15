@@ -1,8 +1,8 @@
 package control;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,15 +15,6 @@ import video.Video;
 import video.VideoSelector;
 import xmlcontrol.XMLController;
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -81,7 +72,7 @@ public class Controller extends Application {
 	 */
 	public void playVideo(int numPassengers){
 		myNumPassengers = numPassengers;
-		Video videoToBePlayed = myVideoSelector.selectVideo();
+		Video videoToBePlayed = myVideoSelector.selectVideo(getPlayableVideos());
 		myGUIController.playVideo(videoToBePlayed);
 	}
 
@@ -103,7 +94,7 @@ public class Controller extends Application {
 	 * that have views remaining, a random video from this set is selected.
 	 * @return
 	 */
-	public Object[] playableVideos(){
+	public Object[] getPlayableVideos(){
 		Object[] playableUnplayedVideos = myVideoList.stream()
 				.filter(Video::canPlay).toArray();
 		if (playableUnplayedVideos.length > 0)
@@ -120,7 +111,7 @@ public class Controller extends Application {
 	 * @return
 	 */
 	public boolean canPlayVideos() {
-		return playableVideos().length > 0;
+		return getPlayableVideos().length > 0;
 	}
 
 	/**
@@ -132,7 +123,7 @@ public class Controller extends Application {
 	 */
 	public void completedVideo(Video videoCompleted) throws TransformerException {
 		videoCompleted.addViews(myNumPassengers);
-		myXMLController.updateXML(videoCompleted, myNumPassengers);
+		myXMLController.updateXML(videoCompleted);
 	}
 
 	/**
@@ -144,11 +135,15 @@ public class Controller extends Application {
 	}
 
 	/**
-	 * Removes the video playing scene from the stage and replaces it with
-	 * the start ride screen so the driver can start a new ride. This method is
-	 * called when the driver clicks File -> Ride Completed.
+	 * Removes the VideoScene from the stage and replaces it with
+	 * the RideStarterScene so the driver can start a new ride. The method
+	 * also sets the alreadyPlayedThisRide attribute of each video to false.
+	 * This method is called when the driver clicks File -> Ride Completed.
 	 */
 	public void endRide() {
+		for(int i = 0; i < myVideoList.size(); i++){
+			myVideoList.get(i).prepareForNewRide();
+		}
 		myGUIController.showStartRideScreen();
 	}
 }
