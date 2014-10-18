@@ -106,8 +106,10 @@ public class XMLController {
 	}
 
 	public void initializeProfile(String initials) throws TransformerException {
-		System.out.println(initials);
 		myProfileWriter.writeProfileXML(initials);
+	}
 
+	public String getInitials() {
+		return myProfileParser.getInitials();
 	}
 }

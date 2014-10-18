@@ -1,20 +1,12 @@
 package xmlcontrol.parsers;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import video.Video;
 
 /**
  * The purpose of this class is to parse the driver XML File. Two things
@@ -29,6 +21,7 @@ import video.Video;
 public class ProfileXMLParser extends XMLParser {
 
 	private static final String INITIALIZED = "initialized";
+	private static final String INITIALS = "initials";
 
 	public ProfileXMLParser(Document profileDocument) 
 			throws ParserConfigurationException, SAXException, IOException{
@@ -39,5 +32,16 @@ public class ProfileXMLParser extends XMLParser {
 	public boolean isFileInitialized() {
 		return myDocument.getDocumentElement()
 				.getAttribute(INITIALIZED).equalsIgnoreCase("true");
+	}
+
+	/**
+	 * This method is called when the driver has finished driving and the file
+	 * name needs to be changed.
+	 * @return the initials of the driver.
+	 */
+	public String getInitials() {
+		Element initialsNode = (Element) myDocument.getDocumentElement()
+				.getElementsByTagName(INITIALS).item(0);
+		return initialsNode.getTextContent();
 	}
 }

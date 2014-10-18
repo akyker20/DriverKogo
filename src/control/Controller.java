@@ -32,6 +32,7 @@ public class Controller extends Application {
 	private int myNumPassengers;
 	private XMLController myXMLController;
 	private Stage myStage;
+	private File myFile;
 
 	public static void main(String[] args){ launch(args); }
 
@@ -57,7 +58,8 @@ public class Controller extends Application {
 	public void initializeDrivingEnvironment(File masterFile) 
 			throws FileNotFoundException, ParserConfigurationException, 
 			SAXException, IOException, TransformerException {
-		myXMLController.initializeVideoXMLControl(myVideoList, masterFile);
+		myFile = masterFile;
+		myXMLController.initializeVideoXMLControl(myVideoList, myFile);
 		myVideoSelector = new VideoSelector(this);	
 		myGUIController.configureDrivingEnvironment();
 	}
@@ -152,5 +154,14 @@ public class Controller extends Application {
 
 	public void submitProfileInformation(String initials) throws TransformerException {
 		myXMLController.initializeProfile(initials);
+	}
+
+	public void appendInitialsToFile() {
+		String originalPath = myFile.getAbsolutePath();
+		int indexToInsert = originalPath.indexOf("kogo_")+5;
+		String strToInsert = myXMLController.getInitials().concat("_");
+    	String newPath = new StringBuilder(originalPath).insert(indexToInsert, strToInsert).toString();
+    	myFile.renameTo(new File(newPath));
+		
 	}
 }

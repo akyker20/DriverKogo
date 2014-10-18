@@ -36,7 +36,6 @@ import xmlcontrol.parsers.VideoXMLParser;
 public class VideoXMLWriter extends XMLWriter {
 	
 	private Map<Video, Node> myVideoNodeMap;
-	private File myFile;
 
 	public VideoXMLWriter(Document videoDocument, Map<Video, Node> videoNodeMap, File file) 
 			throws FileNotFoundException, SAXException, IOException, 
