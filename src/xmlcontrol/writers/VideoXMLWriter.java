@@ -1,4 +1,4 @@
-package xmlcontrol;
+package xmlcontrol.writers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import video.Video;
+import xmlcontrol.parsers.VideoXMLParser;
 
 /**
  * The purpose of this class is to write changes to the driver XML File.
@@ -32,22 +33,16 @@ import video.Video;
  * @author Austin Kyker
  *
  */
-public class XMLWriter {
+public class VideoXMLWriter extends XMLWriter {
 	
-	private Transformer myTransformer;
-	private Document myDocument;
 	private Map<Video, Node> myVideoNodeMap;
 	private File myFile;
 
-	public XMLWriter(Document document, Map<Video, Node> videoNodeMap, File file) 
+	public VideoXMLWriter(Document videoDocument, Map<Video, Node> videoNodeMap, File file) 
 			throws FileNotFoundException, SAXException, IOException, 
 			ParserConfigurationException, TransformerConfigurationException{
-		myFile = file;
+		super(videoDocument, file);
 		myVideoNodeMap = videoNodeMap;
-		myDocument = document;
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		myTransformer = transformerFactory.newTransformer();
-		myTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
 	}
 	
 	/**
@@ -63,10 +58,10 @@ public class XMLWriter {
 	 */
 	public void initializeMasterFile() throws TransformerException{
 		Element statusTag = (Element) myDocument.getDocumentElement()
-				.getElementsByTagName(XMLParser.STATUS).item(0);
-		statusTag.setAttribute(XMLParser.INITIALIZED, "true");
+				.getElementsByTagName(VideoXMLParser.STATUS).item(0);
+		statusTag.setAttribute(VideoXMLParser.INITIALIZED, "true");
 		for(Node videoNode:myVideoNodeMap.values()){
-			((Element) videoNode).setAttribute(XMLParser.PLAYS, "0");
+			((Element) videoNode).setAttribute(VideoXMLParser.PLAYS, "0");
 		}
 		writeFile(myDocument, myFile);
 	}
@@ -82,21 +77,7 @@ public class XMLWriter {
 	 */
 	public void editDrivingStats(Video video) throws TransformerException{
 		Element videoElement = (Element) myVideoNodeMap.get(video);
-		videoElement.setAttribute(XMLParser.PLAYS, "" + video.getMyPlays());
-		writeFile(myDocument, myFile);
+		videoElement.setAttribute(VideoXMLParser.PLAYS, "" + video.getMyPlays());
+		super.writeFile(myDocument, myFile);
 	}	
-
-	/**
-	 * Writes the updates to the file, ensuring the file ends up read-only.
-	 * @param document
-	 * @param xmlFile
-	 * @throws TransformerException
-	 */
-	private void writeFile(Document document, File xmlFile) throws TransformerException {
-		xmlFile.setWritable(true);
-		StreamResult result = new StreamResult(xmlFile);
-		myTransformer.transform(new DOMSource(document), result);
-		xmlFile.setReadOnly();
-		System.out.println("File saved!");
-	}
 }

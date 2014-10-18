@@ -1,10 +1,13 @@
 package gui;
 
+import javax.xml.transform.TransformerException;
+
 import menus.MenuFeature;
 import video.Video;
 import gui.scenes.DragFileScene;
 import gui.scenes.FinishedDrivingScene;
 import gui.scenes.NotEnoughVideosScene;
+import gui.scenes.ProfileSetupScene;
 import gui.scenes.RideStarterScene;
 import gui.scenes.VideoScene;
 import javafx.scene.Group;
@@ -23,24 +26,27 @@ public class GUIController {
 
 	public static final int SCREEN_WIDTH = 600;
 	public static final int SCREEN_HEIGHT = 300;
-	
+
 	private static final String AD_PLAYER_TITLE = "Ad Player";
 	private static final String START_RIDE_TITLE = "Start Ride";
 	private static final String FINISHED_RIDING_TITLE = "Finished Riding";
 	private static final String NO_MORE_VIDEOS_TITLE = "No More Videos";
 	private static final String DRAG_AND_DROP_TITLE = "Drag Kogo File";
+	private static final String PROFILE_SETUP_TITLE = "Kogo Setup";
 
 	private Controller myController;
 	private RideStarterScene myRideStarterScene;
 	private VideoScene myVideoScene;
 	private NotEnoughVideosScene myNotEnoughVideosScene;
 	private FinishedDrivingScene myFinishedDrivingScene;
+	private ProfileSetupScene myProfileSetupScene;
 	private DragFileScene myDragFileScreen;
 	private Stage myStage;
 
 	public GUIController(Stage stage, Controller control){
 		myStage = stage;
 		myController = control;
+		myProfileSetupScene = new ProfileSetupScene(new BorderPane(), this);
 		myDragFileScreen = new DragFileScene(new Group(), myController);
 		myVideoScene = new VideoScene(new BorderPane(), myController, this);
 		myRideStarterScene = new RideStarterScene(new BorderPane(), myController, new MenuFeature(control));
@@ -54,10 +60,25 @@ public class GUIController {
 	 * the driver XML File before it can start showing advertisement clips.
 	 */
 	private void configureStageAndDisplayDragFileScene(){
-		myStage.setTitle(DRAG_AND_DROP_TITLE);
 		myStage.setResizable(false);
-		myStage.setScene(myDragFileScreen);
+		if(myController.isProfileInitialized()){
+			showDragAndDropScene();
+		}
+		else {
+			showProfileSetupScene();
+			
+		}
 		myStage.show();
+	}
+
+	private void showProfileSetupScene() {
+		myStage.setTitle(PROFILE_SETUP_TITLE);
+		myStage.setScene(myProfileSetupScene);
+	}
+
+	private void showDragAndDropScene() {
+		myStage.setTitle(DRAG_AND_DROP_TITLE);
+		myStage.setScene(myDragFileScreen);
 	}
 
 	/**
@@ -72,7 +93,7 @@ public class GUIController {
 		myStage.setFullScreenExitHint("Press spacebar to pause and complete ride");
 		myStage.setFullScreen(true);
 	}
-	
+
 	/**
 	 * If the stage is not full screen already, it is made full screen and a hint
 	 * is displayed to driver reminding them how to pause a video and complete a ride.
@@ -122,5 +143,10 @@ public class GUIController {
 			showStartRideScreen();
 		else
 			notEnoughVideos();
+	}
+
+	public void submitProfileInformation(String initials) throws TransformerException {
+		myController.submitProfileInformation(initials);
+		showDragAndDropScene();
 	}
 }

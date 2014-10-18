@@ -32,7 +32,6 @@ public class Controller extends Application {
 	private int myNumPassengers;
 	private XMLController myXMLController;
 	private Stage myStage;
-	private File myFile;
 
 	public static void main(String[] args){ launch(args); }
 
@@ -40,6 +39,7 @@ public class Controller extends Application {
 	public void start(Stage stage) throws Exception {
 		myStage = stage;
 		myVideoList = new ArrayList<Video>();
+		myXMLController = new XMLController();
 		myGUIController = new GUIController(myStage, this);
 	}
 
@@ -54,11 +54,10 @@ public class Controller extends Application {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	public void initializeDrivingEnvironment(File file) 
+	public void initializeDrivingEnvironment(File masterFile) 
 			throws FileNotFoundException, ParserConfigurationException, 
 			SAXException, IOException, TransformerException {
-		myFile = file;
-		myXMLController = new XMLController(myVideoList, myFile);
+		myXMLController.initializeVideoXMLControl(myVideoList, masterFile);
 		myVideoSelector = new VideoSelector(this);	
 		myGUIController.configureDrivingEnvironment();
 	}
@@ -145,5 +144,13 @@ public class Controller extends Application {
 			myVideoList.get(i).prepareForNewRide();
 		}
 		myGUIController.showStartRideScreen();
+	}
+
+	public boolean isProfileInitialized() {
+		return myXMLController.isProfileInitialized();
+	}
+
+	public void submitProfileInformation(String initials) throws TransformerException {
+		myXMLController.initializeProfile(initials);
 	}
 }

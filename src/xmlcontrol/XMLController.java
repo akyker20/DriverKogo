@@ -5,10 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Document;
@@ -16,6 +18,10 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import video.Video;
+import xmlcontrol.parsers.ProfileXMLParser;
+import xmlcontrol.parsers.VideoXMLParser;
+import xmlcontrol.writers.ProfileXMLWriter;
+import xmlcontrol.writers.VideoXMLWriter;
 
 /**
  * The purpose of this controller is to set up the XMLParser and
@@ -24,11 +30,16 @@ import video.Video;
  *
  */
 public class XMLController {
-	
-	private static final String TRUE = "true";
-	private XMLWriter myWriter;
-	private Document myDocument;
-	
+
+	public static final String DRIVER_PROFILE_PATH = "./src/xml/driver_profile.xml";
+	private VideoXMLWriter myVideoWriter;
+	private VideoXMLParser myVideoParser;
+	private ProfileXMLWriter myProfileWriter;
+	private ProfileXMLParser myProfileParser;
+	private Document myVideosDocument;
+	private Document myProfileDocument;
+	private DocumentBuilder myBuilder;
+
 	/**
 	 * Initializes a document and provides it to an XMLParser instance
 	 * and an XMLWriter instance. Determines if the file has been initialized.
@@ -40,20 +51,43 @@ public class XMLController {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	public XMLController(ArrayList<Video> videoList, File masterFile) 
+	public XMLController() 
 			throws ParserConfigurationException, FileNotFoundException, SAXException, 
 			IOException, TransformerException {
 		
+		File profileFile = new File(DRIVER_PROFILE_PATH);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		myDocument = builder.parse(new FileInputStream(masterFile));
+		myBuilder = factory.newDocumentBuilder();
+		myProfileDocument = myBuilder.parse(new FileInputStream(profileFile));
+
+
+		myProfileParser = new ProfileXMLParser(myProfileDocument);
+		myProfileWriter = new ProfileXMLWriter(myProfileDocument, profileFile);
+
 		
-		XMLParser xmlParser = new XMLParser(myDocument);	
-		boolean isFileInitialized = isFileInitialized();
-		xmlParser.buildVideos(videoList, isFileInitialized);
-		myWriter = new XMLWriter(myDocument, xmlParser.getVideoNodeMap(), masterFile);	
-		if(!isFileInitialized){
-			myWriter.initializeMasterFile();
+
+	}
+	
+	/**
+	 * This method is called after the driver has dragged and dropped a valid file.
+	 * It begins parsing the file and creating video instances, as well as initializes
+	 * the xml video writer that will allow for changes to be made and recorded.
+	 * @param videoList
+	 * @param masterFile
+	 * @throws FileNotFoundException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws TransformerException
+	 */
+	public void initializeVideoXMLControl(List<Video> videoList, File masterFile) throws FileNotFoundException, 
+	SAXException, IOException, ParserConfigurationException, TransformerException {
+		myVideosDocument = myBuilder.parse(new FileInputStream(masterFile));
+		myVideoParser = new VideoXMLParser(myVideosDocument);	
+		myVideoParser.buildVideos(videoList);
+		myVideoWriter = new VideoXMLWriter(myVideosDocument, myVideoParser.getVideoNodeMap(), masterFile);	
+		if(!myVideoParser.isFileInitialized()){
+			myVideoWriter.initializeMasterFile();
 		}
 	}
 
@@ -64,16 +98,16 @@ public class XMLController {
 	 * @throws TransformerException
 	 */
 	public void updateXML(Video videoCompleted) throws TransformerException {
-		myWriter.editDrivingStats(videoCompleted);
+		myVideoWriter.editDrivingStats(videoCompleted);
 	}
-	
-	/**
-	 * Checks the status element to see if the initialized attribute is true or false
-	 * @return true if the initialized attribute is true - false, otherwise.
-	 */
-	public boolean isFileInitialized(){
-		Element statusTag = (Element) myDocument.getDocumentElement()
-				.getElementsByTagName(XMLParser.STATUS).item(0);
-		return statusTag.getAttribute(XMLParser.INITIALIZED).equalsIgnoreCase(TRUE);
+
+	public boolean isProfileInitialized() {
+		return myProfileParser.isFileInitialized();
+	}
+
+	public void initializeProfile(String initials) throws TransformerException {
+		System.out.println(initials);
+		myProfileWriter.writeProfileXML(initials);
+
 	}
 }

@@ -1,9 +1,11 @@
-package xmlcontrol;
+package xmlcontrol.parsers;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
@@ -26,7 +28,7 @@ import video.Video;
  * @author Austin Kyker
  *
  */
-public class XMLParser extends DefaultHandler {
+public class VideoXMLParser extends XMLParser {
 
 	public static final String LENGTH = "length";
 	public static final String MAX_PLAYS = "maxPlays";
@@ -38,12 +40,13 @@ public class XMLParser extends DefaultHandler {
 	public static final String INITIALIZED = "initialized";
 
 	private Map<Video, Node> myVideoNodeMap;
-	private Document myDocument;
+	private boolean myFileAlreadyInitialized;
 
-	public XMLParser(Document document) 
+	public VideoXMLParser(Document videosDocument) 
 			throws ParserConfigurationException, SAXException, IOException{
-		myDocument = document;
+		super(videosDocument);
 		myVideoNodeMap = new HashMap<Video, Node>();
+		myFileAlreadyInitialized = isFileInitialized();
 	}
 
 	/**
@@ -53,13 +56,13 @@ public class XMLParser extends DefaultHandler {
 	 * @param videoList - the list that will hold all videos
 	 * @param fileAlreadyInitialized - whether or not the file has already been initialized
 	 */
-	public void buildVideos(ArrayList<Video> videoList, boolean fileAlreadyInitialized) {
+	public void buildVideos(List<Video> videoList) {
 		Element root = myDocument.getDocumentElement();
 		NodeList videoNodes = root.getElementsByTagName(VIDEO);
 		for(int i = 0; i < videoNodes.getLength(); i++){
 			Node videoNode = videoNodes.item(i);
 			if (videoNode instanceof Element && videoNode.getNodeName().equalsIgnoreCase(VIDEO)) {
-				Video video = buildVideoFromNode(videoNode, fileAlreadyInitialized);
+				Video video = buildVideoFromNode(videoNode);
 				videoList.add(video);
 				myVideoNodeMap.put(video, videoNode);
 			}
@@ -72,14 +75,14 @@ public class XMLParser extends DefaultHandler {
 	 * @param fileAlreadyInitialized
 	 * @return
 	 */
-	private Video buildVideoFromNode(Node videoNode, boolean fileAlreadyInitialized) {
+	private Video buildVideoFromNode(Node videoNode) {
 		NamedNodeMap attributes = videoNode.getAttributes();
 		int length = Integer.parseInt(getAttributeValue(attributes, LENGTH));
 		int maxPlays = Integer.parseInt(getAttributeValue(attributes, MAX_PLAYS));
 		String name = getAttributeValue(attributes, TITLE);
 		String company = getAttributeValue(attributes, COMPANY);
 		Video video;
-		if(fileAlreadyInitialized){
+		if(myFileAlreadyInitialized){
 			int playsCompleted = Integer.parseInt(getAttributeValue(attributes, PLAYS));
 			video = new Video(company, name, playsCompleted, maxPlays, length);
 		}
@@ -106,5 +109,16 @@ public class XMLParser extends DefaultHandler {
 	 */
 	public Map<Video, Node> getVideoNodeMap() {
 		return myVideoNodeMap;
+	}
+	
+	/**
+	 * Checks the status element to see if the initialized attribute is true or false
+	 * @return true if the initialized attribute is true - false, otherwise.
+	 */
+	@Override
+	public boolean isFileInitialized(){
+		Element statusTag = (Element) myDocument.getDocumentElement()
+				.getElementsByTagName(VideoXMLParser.STATUS).item(0);
+		return statusTag.getAttribute(VideoXMLParser.INITIALIZED).equalsIgnoreCase("true");
 	}
 }
