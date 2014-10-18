@@ -3,7 +3,10 @@ package control;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
+import static java.nio.file.StandardCopyOption.*;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -136,6 +139,7 @@ public class Controller extends Application {
 	 */
 	public void finishDriving() {
 		myGUIController.showFinishedDrivingScreen();
+		appendInitialsToFile();
 	}
 
 	/**
@@ -161,10 +165,16 @@ public class Controller extends Application {
 
 	public void appendInitialsToFile() {
 		String originalPath = myXMLFile.getAbsolutePath();
-		int indexToInsert = originalPath.indexOf("kogo_")+5;
-		String strToInsert = myXMLController.getInitials().concat("_");
-    	String newPath = new StringBuilder(originalPath).insert(indexToInsert, strToInsert).toString();
-    	myXMLFile.renameTo(new File(newPath));
+		String newName = originalPath.substring(originalPath.indexOf("kogo_")).replace("kogo_", myXMLController.getInitials().concat("_"));
+		File desktopFile = new File(System.getProperty("user.home") + "/Desktop/"+newName);
+		if(desktopFile.exists()) desktopFile.setWritable(true);
+		Path desktopPath = desktopFile.toPath();
+		try {
+			Files.copy(myXMLFile.toPath(), desktopPath, REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

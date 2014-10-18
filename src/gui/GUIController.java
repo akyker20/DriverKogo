@@ -135,7 +135,6 @@ public class GUIController {
 	public void showFinishedDrivingScreen() {
 		myStage.setScene(myFinishedDrivingScene);
 		myStage.setTitle(FINISHED_RIDING_TITLE);
-		myController.appendInitialsToFile();
 	}
 
 	/**
