@@ -35,7 +35,7 @@ public class DragFileScene extends Scene {
 		super(root);
 		
 		LocalDateTime now = LocalDateTime.now(); 
-	    String date = now.getMonthValue() + "_" + now.getDayOfMonth() + "_" + now.getYear();
+	    String date = now.getMonthValue() + "-" + now.getDayOfMonth() + "-" + now.getYear();
 	    String fileName = "kogo_" + date + ".xml";
 
 		Label label = new Label(DROP_INSTRUCTIONS);
