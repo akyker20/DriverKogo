@@ -36,7 +36,7 @@ public class DragFileScene extends Scene {
 		
 		LocalDateTime now = LocalDateTime.now(); 
 	    String date = now.getMonthValue() + "-" + now.getDayOfMonth() + "-" + now.getYear();
-	    String fileName = "kogo_" + date + ".xml";
+	    String fileName = "deliverable_" + date;
 
 		Label label = new Label(DROP_INSTRUCTIONS);
 		label.setLayoutX(210);
@@ -66,6 +66,8 @@ public class DragFileScene extends Scene {
 				DragFileScene.this.setFill(Color.WHITE);
 			}
 		});
+		
+		
 
 		// When a file is actually dropped it is validated to
 		// ensure it has the correct name. The controller is 
@@ -78,11 +80,17 @@ public class DragFileScene extends Scene {
 				if (db.hasFiles()) {
 					success = true;
 					String filePath = null;
-					for (File file:db.getFiles()) {
-						filePath = file.getAbsolutePath();
-						if(filePath.contains(fileName)){
+					for (File directory:db.getFiles()) {
+						filePath = directory.getAbsolutePath();
+						if(directory.isDirectory() && filePath.contains(fileName)){
 							try {
-								control.initializeDrivingEnvironment(file);
+								File xmlFile = null;
+								for(File f:directory.listFiles()){
+									if(f.getAbsolutePath().contains("kogo")){
+										xmlFile = f;
+									}
+								}
+								control.initializeDrivingEnvironment(directory, xmlFile);
 							} catch (ParserConfigurationException
 									| SAXException | IOException
 									| TransformerException e) {

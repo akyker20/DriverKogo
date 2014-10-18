@@ -48,10 +48,6 @@ public class GUIController {
 		myController = control;
 		myProfileSetupScene = new ProfileSetupScene(new BorderPane(), this);
 		myDragFileScreen = new DragFileScene(new Group(), myController);
-		myVideoScene = new VideoScene(new BorderPane(), myController, this);
-		myRideStarterScene = new RideStarterScene(new BorderPane(), myController, new MenuFeature(control));
-		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane(), new MenuFeature(control));
-		myFinishedDrivingScene = new FinishedDrivingScene(new BorderPane(), new MenuFeature(control));
 		configureStageAndDisplayDragFileScene();
 	}
 
@@ -69,6 +65,13 @@ public class GUIController {
 			
 		}
 		myStage.show();
+	}
+	
+	private void initializeRemainingScenes(){
+		myRideStarterScene = new RideStarterScene(new BorderPane(), myController, new MenuFeature(myController));
+		myVideoScene = new VideoScene(new BorderPane(), myController, this, myController.getVideoDirPath());
+		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane(), new MenuFeature(myController));
+		myFinishedDrivingScene = new FinishedDrivingScene(new BorderPane(), new MenuFeature(myController));
 	}
 
 	private void showProfileSetupScene() {
@@ -140,6 +143,7 @@ public class GUIController {
 	 * Otherwise, the "Not Enough Videos" screen is shown.
 	 */
 	public void configureDrivingEnvironment() {
+		initializeRemainingScenes();
 		if(myController.canPlayVideos())
 			showStartRideScreen();
 		else

@@ -42,8 +42,9 @@ public class VideoScene extends Scene {
 	private VBox myMenuContainer;
 	private GUIController myGUIController;
 	private boolean isMediaViewInitialized;
+	private String myVideosDirectoryPath;
 
-	public VideoScene(BorderPane parent, Controller control, GUIController controller) {
+	public VideoScene(BorderPane parent, Controller control, GUIController controller, String directoryPath) {
 		super(parent);
 
 		myMenuFeature = new MenuFeature(control);
@@ -51,6 +52,7 @@ public class VideoScene extends Scene {
 		myControl = control;
 		myMediaView = new MediaView(myMediaPlayer);
 		myGUIController = controller;
+		myVideosDirectoryPath = directoryPath;
 
 		parent.setCenter(myMediaView);
 
@@ -104,7 +106,7 @@ public class VideoScene extends Scene {
 	 */
 	public void setUpVideo(Video video) {
 		myMenuContainer.getChildren().remove(myMenuFeature);
-		File videoFile = new File(video.getPath());
+		File videoFile = new File(getPath(video));
 		Media media = new Media(videoFile.toURI().toString());
 		myMediaPlayer = new MediaPlayer(media);
 		myMediaPlayer.setOnEndOfMedia(new Runnable(){
@@ -124,6 +126,10 @@ public class VideoScene extends Scene {
 			initializeMediaViewSize();
 		}
 		myMediaPlayer.play();
+	}
+
+	private String getPath(Video video) {
+		return myVideosDirectoryPath + video.getMyCompany() + "_" + video.getMyName()+ ".mp4";
 	}
 
 	/**

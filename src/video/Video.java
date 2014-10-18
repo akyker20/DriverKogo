@@ -90,14 +90,6 @@ public class Video {
 	}
 
 	/**
-	 * Returns the path to the video.
-	 * @return String
-	 */
-	public String getPath() {
-		return "./src/videos/" + myCompany.replaceAll(" ", "") + "_" + myName + ".mp4";
-	}
-
-	/**
 	 * Prepares the video for a new ride by setting alreadyPlayedThisRide back to false
 	 */
 	public void prepareForNewRide(){

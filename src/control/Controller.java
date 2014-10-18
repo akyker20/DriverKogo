@@ -1,6 +1,7 @@
 package control;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +33,8 @@ public class Controller extends Application {
 	private int myNumPassengers;
 	private XMLController myXMLController;
 	private Stage myStage;
-	private File myFile;
+	private File myDeliverableDirectory;
+	private File myXMLFile;
 
 	public static void main(String[] args){ launch(args); }
 
@@ -55,11 +57,12 @@ public class Controller extends Application {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	public void initializeDrivingEnvironment(File masterFile) 
+	public void initializeDrivingEnvironment(File deliverableDirectory, File xmlFile) 
 			throws FileNotFoundException, ParserConfigurationException, 
 			SAXException, IOException, TransformerException {
-		myFile = masterFile;
-		myXMLController.initializeVideoXMLControl(myVideoList, myFile);
+		myDeliverableDirectory = deliverableDirectory;
+		myXMLFile = xmlFile;
+		myXMLController.initializeVideoXMLControl(myVideoList, myXMLFile);
 		myVideoSelector = new VideoSelector(this);	
 		myGUIController.configureDrivingEnvironment();
 	}
@@ -157,11 +160,15 @@ public class Controller extends Application {
 	}
 
 	public void appendInitialsToFile() {
-		String originalPath = myFile.getAbsolutePath();
+		String originalPath = myXMLFile.getAbsolutePath();
 		int indexToInsert = originalPath.indexOf("kogo_")+5;
 		String strToInsert = myXMLController.getInitials().concat("_");
     	String newPath = new StringBuilder(originalPath).insert(indexToInsert, strToInsert).toString();
-    	myFile.renameTo(new File(newPath));
+    	myXMLFile.renameTo(new File(newPath));
 		
+	}
+
+	public String getVideoDirPath() {
+		return myDeliverableDirectory.getAbsolutePath()+"/videos/";
 	}
 }
