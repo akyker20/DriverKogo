@@ -67,7 +67,12 @@ public class GUIController {
 		myStage.show();
 	}
 	
-	private void initializeRemainingScenes(){
+	/**
+	 * Initializes the scenes that are necessary for driving. This initialization
+	 * does not happen until after the driver has dragged and dropped the deliverable
+	 * directory.
+	 */
+	private void initializeDrivingScenes(){
 		myRideStarterScene = new RideStarterScene(new BorderPane(), myController, new MenuFeature(myController));
 		myVideoScene = new VideoScene(new BorderPane(), myController, this, myController.getVideoDirPath());
 		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane(), new MenuFeature(myController));
@@ -142,7 +147,7 @@ public class GUIController {
 	 * Otherwise, the "Not Enough Videos" screen is shown.
 	 */
 	public void configureDrivingEnvironment() {
-		initializeRemainingScenes();
+		initializeDrivingScenes();
 		if(myController.canPlayVideos())
 			showStartRideScreen();
 		else

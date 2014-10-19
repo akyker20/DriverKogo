@@ -1,7 +1,6 @@
 package control;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import static java.nio.file.StandardCopyOption.*;
 import java.io.IOException;
@@ -44,7 +43,6 @@ public class Controller extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		myStage = stage;
-		myVideoList = new ArrayList<Video>();
 		myXMLController = new XMLController();
 		myGUIController = new GUIController(myStage, this);
 	}
@@ -65,6 +63,7 @@ public class Controller extends Application {
 			SAXException, IOException, TransformerException {
 		myDeliverableDirectory = deliverableDirectory;
 		myXMLFile = xmlFile;
+		myVideoList = new ArrayList<Video>();
 		myXMLController.initializeVideoXMLControl(myVideoList, myXMLFile);
 		myVideoSelector = new VideoSelector(this);	
 		myGUIController.configureDrivingEnvironment();
@@ -165,7 +164,7 @@ public class Controller extends Application {
 
 	public void appendInitialsToFile() {
 		String originalPath = myXMLFile.getAbsolutePath();
-		String newName = originalPath.substring(originalPath.indexOf("kogo_")).replace("kogo_", myXMLController.getInitials().concat("_"));
+		String newName = originalPath.substring(originalPath.indexOf("kogo_")).replace("kogo_", "kogo_".concat(myXMLController.getInitials().concat("_")));
 		File desktopFile = new File(System.getProperty("user.home") + "/Desktop/"+newName);
 		if(desktopFile.exists()) desktopFile.setWritable(true);
 		Path desktopPath = desktopFile.toPath();
