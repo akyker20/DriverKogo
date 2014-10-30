@@ -129,7 +129,8 @@ public class VideoScene extends Scene {
 	}
 
 	private String getPath(Video video) {
-		return myVideosDirectoryPath + video.getMyCompany() + "_" + video.getMyName()+ ".mp4";
+		return myVideosDirectoryPath + video.getMyCompany().replace(" ", "") + 
+				"_" + video.getMyName() + ".mp4";
 	}
 
 	/**
