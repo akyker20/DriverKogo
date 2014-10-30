@@ -154,6 +154,12 @@ public class GUIController {
 			notEnoughVideos();
 	}
 
+	/**
+	 * Submits profile information so that program knows how to make file name
+	 * of output.
+	 * @param initials
+	 * @throws TransformerException
+	 */
 	public void submitProfileInformation(String initials) throws TransformerException {
 		myController.submitProfileInformation(initials);
 		showDragAndDropScene();

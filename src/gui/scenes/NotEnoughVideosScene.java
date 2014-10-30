@@ -16,6 +16,7 @@ public class NotEnoughVideosScene extends Scene {
 		super(pane, GUIController.SCREEN_WIDTH, GUIController.SCREEN_HEIGHT);
 		pane.setCenter(new Label("There are not enough videos for you to drive. "
 								+ "You will not be paid for continued driving."));
+		menu.enableFinishDrivingItem();
 		pane.setTop(menu);
 	}
 
