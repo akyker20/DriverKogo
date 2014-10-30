@@ -1,10 +1,8 @@
 package menus;
 
-import control.Controller;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import control.Controller;
 
 /**
  * FileMenu provides two options:
