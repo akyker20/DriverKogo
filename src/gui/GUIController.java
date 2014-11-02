@@ -1,18 +1,13 @@
 package gui;
 
-import javax.xml.transform.TransformerException;
-
-import menus.MenuFeature;
-import video.Video;
 import gui.scenes.DragFileScene;
 import gui.scenes.FinishedDrivingScene;
-import gui.scenes.NotEnoughVideosScene;
 import gui.scenes.ProfileSetupScene;
-import gui.scenes.RideStarterScene;
-import gui.scenes.VideoScene;
+import gui.scenes.DrivingScene;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import video.Video;
 import control.Controller;
 
 /**
@@ -35,19 +30,12 @@ public class GUIController {
 	private static final String PROFILE_SETUP_TITLE = "Kogo Setup";
 
 	private Controller myController;
-	private RideStarterScene myRideStarterScene;
-	private VideoScene myVideoScene;
-	private NotEnoughVideosScene myNotEnoughVideosScene;
-	private FinishedDrivingScene myFinishedDrivingScene;
-	private ProfileSetupScene myProfileSetupScene;
-	private DragFileScene myDragFileScreen;
+	private DrivingScene myDrivingScene;
 	private Stage myStage;
 
 	public GUIController(Stage stage, Controller control){
 		myStage = stage;
 		myController = control;
-		myProfileSetupScene = new ProfileSetupScene(new BorderPane(), this);
-		myDragFileScreen = new DragFileScene(new Group(), myController);
 		configureStageAndDisplayDragFileScene();
 	}
 
@@ -62,31 +50,18 @@ public class GUIController {
 		}
 		else {
 			showProfileSetupScene();
-			
 		}
 		myStage.show();
-	}
-	
-	/**
-	 * Initializes the scenes that are necessary for driving. This initialization
-	 * does not happen until after the driver has dragged and dropped the deliverable
-	 * directory.
-	 */
-	private void initializeDrivingScenes(){
-		myRideStarterScene = new RideStarterScene(new BorderPane(), myController, new MenuFeature(myController));
-		myVideoScene = new VideoScene(new BorderPane(), myController, this, myController.getVideoDirPath());
-		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane(), new MenuFeature(myController));
-		myFinishedDrivingScene = new FinishedDrivingScene(new BorderPane(), new MenuFeature(myController));
 	}
 
 	private void showProfileSetupScene() {
 		myStage.setTitle(PROFILE_SETUP_TITLE);
-		myStage.setScene(myProfileSetupScene);
+		myStage.setScene(new ProfileSetupScene(new BorderPane(), myController));
 	}
 
-	private void showDragAndDropScene() {
+	public void showDragAndDropScene() {
 		myStage.setTitle(DRAG_AND_DROP_TITLE);
-		myStage.setScene(myDragFileScreen);
+		myStage.setScene(new DragFileScene(new Group(), myController));
 	}
 
 	/**
@@ -94,9 +69,8 @@ public class GUIController {
 	 * and presents the driver with a hint on how to pause and complete rides.
 	 * @param video
 	 */
-	public void playVideo(Video video){
-		myVideoScene.setUpVideo(video);
-		myStage.setScene(myVideoScene);
+	public void showVideo(Video video){
+		myDrivingScene.showVideo(video);
 		myStage.setTitle(AD_PLAYER_TITLE);
 		myStage.setFullScreenExitHint("Press spacebar to pause and complete ride");
 		myStage.setFullScreen(true);
@@ -118,7 +92,8 @@ public class GUIController {
 	 * students in the ride.
 	 */
 	public void showStartRideScreen(){
-		myStage.setScene(myRideStarterScene);
+		myDrivingScene.showStartRideScreen();
+		myStage.setScene(myDrivingScene);
 		myStage.setTitle(START_RIDE_TITLE);
 	}
 
@@ -128,7 +103,8 @@ public class GUIController {
 	 * paid for continued driving. Hopefully, drivers won't see this screen!
 	 */
 	public void notEnoughVideos() {
-		myStage.setScene(myNotEnoughVideosScene);
+		myDrivingScene.showNotEnoughVideos();
+		myStage.setScene(myDrivingScene);
 		myStage.setTitle(NO_MORE_VIDEOS_TITLE);
 	}
 
@@ -138,30 +114,12 @@ public class GUIController {
 	 * XML file to the owners.
 	 */
 	public void showFinishedDrivingScreen() {
-		myStage.setScene(myFinishedDrivingScene);
 		myStage.setTitle(FINISHED_RIDING_TITLE);
+		myStage.setScene(new FinishedDrivingScene(new BorderPane()));
 	}
 
-	/**
-	 * If there are videos to play, the start ride screen is displayed.
-	 * Otherwise, the "Not Enough Videos" screen is shown.
-	 */
-	public void configureDrivingEnvironment() {
-		initializeDrivingScenes();
-		if(myController.canPlayVideos())
-			showStartRideScreen();
-		else
-			notEnoughVideos();
-	}
-
-	/**
-	 * Submits profile information so that program knows how to make file name
-	 * of output.
-	 * @param initials
-	 * @throws TransformerException
-	 */
-	public void submitProfileInformation(String initials) throws TransformerException {
-		myController.submitProfileInformation(initials);
-		showDragAndDropScene();
+	public void setupDrivingEnvironment() {
+		myDrivingScene = new DrivingScene(new BorderPane(), myController, this);
+		myStage.setScene(myDrivingScene);
 	}
 }

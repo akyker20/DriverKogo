@@ -22,7 +22,7 @@ public class VideoSelector {
 	 * and then uses a random number generator to choose one.
 	 * @return the selected video to be played next
 	 */
-	public Video selectVideo(Object[] playableVideos){
+	public Video selectVideoFrom(Object[] playableVideos){
 		int numPlayableVideos = playableVideos.length;
 		if(numPlayableVideos > 0){
 			return (Video) playableVideos[myRandomGenerator.nextInt(numPlayableVideos)];

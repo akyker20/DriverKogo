@@ -1,24 +1,23 @@
 package control;
 
+import gui.GUIController;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import static java.nio.file.StandardCopyOption.*;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.xml.sax.SAXException;
 
-import gui.GUIController;
 import video.Video;
 import video.VideoSelector;
 import xmlcontrol.XMLController;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 /**
  * This class serves as a controller between Video (the backend) and the
@@ -34,17 +33,14 @@ public class Controller extends Application {
 	private ArrayList<Video> myVideoList;
 	private int myNumPassengers;
 	private XMLController myXMLController;
-	private Stage myStage;
 	private File myDeliverableDirectory;
-	private File myXMLFile;
 
 	public static void main(String[] args){ launch(args); }
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		myStage = stage;
 		myXMLController = new XMLController();
-		myGUIController = new GUIController(myStage, this);
+		myGUIController = new GUIController(stage, this);
 	}
 
 	/**
@@ -62,11 +58,10 @@ public class Controller extends Application {
 			throws FileNotFoundException, ParserConfigurationException, 
 			SAXException, IOException, TransformerException {
 		myDeliverableDirectory = deliverableDirectory;
-		myXMLFile = xmlFile;
 		myVideoList = new ArrayList<Video>();
-		myXMLController.initializeVideoXMLControl(myVideoList, myXMLFile);
+		myXMLController.initializeVideoXMLControl(myVideoList, xmlFile);
 		myVideoSelector = new VideoSelector(this);	
-		myGUIController.configureDrivingEnvironment();
+		myGUIController.setupDrivingEnvironment();
 	}
 
 	/**
@@ -78,8 +73,7 @@ public class Controller extends Application {
 	 */
 	public void playVideo(int numPassengers){
 		myNumPassengers = numPassengers;
-		Video videoToBePlayed = myVideoSelector.selectVideo(getPlayableVideos());
-		myGUIController.playVideo(videoToBePlayed);
+		myGUIController.showVideo(myVideoSelector.selectVideoFrom(getPlayableVideos()));
 	}
 
 	/**
@@ -138,7 +132,7 @@ public class Controller extends Application {
 	 */
 	public void finishDriving() {
 		myGUIController.showFinishedDrivingScreen();
-		appendInitialsToFile();
+		myXMLController.appendInitialsToFile();
 	}
 
 	/**
@@ -160,21 +154,7 @@ public class Controller extends Application {
 
 	public void submitProfileInformation(String initials) throws TransformerException {
 		myXMLController.initializeProfile(initials);
-	}
-
-	public void appendInitialsToFile() {
-		String originalPath = myXMLFile.getAbsolutePath();
-		String newName = originalPath.substring(originalPath.indexOf("kogo_")).replace("kogo_", "kogo_".concat(myXMLController.getInitials().concat("_")));
-		File desktopFile = new File(System.getProperty("user.home") + "/Desktop/"+newName);
-		if(desktopFile.exists()) desktopFile.setWritable(true);
-		Path desktopPath = desktopFile.toPath();
-		try {
-			Files.copy(myXMLFile.toPath(), desktopPath, REPLACE_EXISTING);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		myGUIController.showDragAndDropScene();
 	}
 
 	public String getVideoDirPath() {

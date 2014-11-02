@@ -1,26 +1,19 @@
-package gui.scenes;
-
-import gui.GUIController;
+package gui.panes;
 
 import java.io.File;
 
-import javax.xml.transform.TransformerException;
-
-import menus.MenuFeature;
-import video.Video;
-import control.Controller;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.media.MediaView;
+
+import javax.xml.transform.TransformerException;
+
+import video.Video;
+import control.Controller;
 
 /**
  * The purpose of this class is to create the scene that will play videos.
@@ -33,69 +26,35 @@ import javafx.scene.media.MediaView;
  * @author Austin Kyker
  * 
  */
-public class VideoScene extends Scene {
+public class VideoPane extends BorderPane {
 
 	private Controller myControl;
 	private MediaPlayer myMediaPlayer;
 	private MediaView myMediaView;
-	private MenuFeature myMenuFeature;
-	private VBox myMenuContainer;
-	private GUIController myGUIController;
 	private boolean isMediaViewInitialized;
-	private String myVideosDirectoryPath;
 
-	public VideoScene(BorderPane parent, Controller control, GUIController controller, String directoryPath) {
-		super(parent);
-
-		myMenuFeature = new MenuFeature(control);
-		myMenuFeature.enableEndRideItem();
+	public VideoPane(Controller control) {
 		myControl = control;
 		myMediaView = new MediaView(myMediaPlayer);
-		myGUIController = controller;
-		myVideosDirectoryPath = directoryPath;
+		this.setCenter(myMediaView);
+	}
 
-		parent.setCenter(myMediaView);
-
-		myMenuContainer = new VBox();
-		parent.setTop(myMenuContainer);
-
-		this.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle (KeyEvent e) {
-				if (e.getCode().equals(KeyCode.SPACE)) {
-					if(myMediaPlayer.getStatus() == Status.PLAYING){
-						pauseAndDisplayMenu();
-					}
-					else{             	   
-						myGUIController.makeFullScreen();
-						playAndRemoveMenu();
-					}
-				}
-				else if(e.getCode().equals(KeyCode.ESCAPE)){
-					pauseAndDisplayMenu();
-				}
-			}
-		});
+	public boolean isPlaying() {
+		return myMediaPlayer.getStatus() == Status.PLAYING;
 	}
 
 	/**
 	 * Plays the player and removes the menu.
 	 */
-	protected void playAndRemoveMenu() {
+	public void play() {
 		myMediaPlayer.play();
-		if(myMenuContainer.getChildren().contains(myMenuFeature)){
-			myMenuContainer.getChildren().remove(myMenuFeature);
-		}
 	}
 
 	/**
 	 * Pauses the player and displays the menu.
 	 */
-	protected void pauseAndDisplayMenu() {
+	public void pause() {
 		myMediaPlayer.pause();
-		if(!myMenuContainer.getChildren().contains(myMenuFeature)){
-			myMenuContainer.getChildren().add(myMenuFeature);
-		}
 	}
 
 	/**
@@ -105,7 +64,6 @@ public class VideoScene extends Scene {
 	 * @param video
 	 */
 	public void setUpVideo(Video video) {
-		myMenuContainer.getChildren().remove(myMenuFeature);
 		File videoFile = new File(getPath(video));
 		Media media = new Media(videoFile.toURI().toString());
 		myMediaPlayer = new MediaPlayer(media);
@@ -129,7 +87,7 @@ public class VideoScene extends Scene {
 	}
 
 	private String getPath(Video video) {
-		return myVideosDirectoryPath + video.getMyCompany().replace(" ", "") + 
+		return myControl.getVideoDirPath() + video.getMyCompany().replace(" ", "") + 
 				"_" + video.getMyName() + ".mp4";
 	}
 

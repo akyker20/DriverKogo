@@ -1,30 +1,27 @@
-package gui.scenes;
+package gui.panes;
 
-import menus.MenuFeature;
-import control.Controller;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import control.Controller;
 
 /**
  * This scene allows the user to select the number of passengers in a ride.
  * This scene is displayed before every ride.
  * @author Austin Kyker
  */
-public class RideStarterScene extends Scene {
+public class RideStarterPane extends BorderPane {
 
     private static final String STYLESHEET_PACKAGE = "Stylesheets/";
     private static final String BUTTON_INSTRUCTIONS = "Number of Students Riding...";
     
 	private Controller myControl;
 	
-	public RideStarterScene(BorderPane parent, Controller control, MenuFeature menu) {
-		super(parent);
+	public RideStarterPane(Controller control) {
 		myControl = control;
 		this.getStylesheets().add(STYLESHEET_PACKAGE + "style.css");
 		
@@ -38,9 +35,7 @@ public class RideStarterScene extends Scene {
 		container.getChildren().addAll(buttonHolder, label);
 		container.setAlignment(Pos.BASELINE_RIGHT);
 		
-		parent.setCenter(container);
-		menu.enableFinishDrivingItem();
-		parent.setTop(menu);
+		this.setCenter(container);
 	}
 
 	/**

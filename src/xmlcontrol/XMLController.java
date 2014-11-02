@@ -1,9 +1,13 @@
 package xmlcontrol;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -36,6 +40,7 @@ public class XMLController {
 	private Document myVideosDocument;
 	private Document myProfileDocument;
 	private DocumentBuilder myBuilder;
+	private File myXMLFile;
 
 	/**
 	 * Initializes a document and provides it to an XMLParser instance
@@ -51,20 +56,17 @@ public class XMLController {
 	public XMLController() 
 			throws ParserConfigurationException, FileNotFoundException, SAXException, 
 			IOException, TransformerException {
-		
+
 		File profileFile = new File(DRIVER_PROFILE_PATH);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		myBuilder = factory.newDocumentBuilder();
 		myProfileDocument = myBuilder.parse(new FileInputStream(profileFile));
 
-
 		myProfileParser = new ProfileXMLParser(myProfileDocument);
 		myProfileWriter = new ProfileXMLWriter(myProfileDocument, profileFile);
 
-		
-
 	}
-	
+
 	/**
 	 * This method is called after the driver has dragged and dropped a valid file.
 	 * It begins parsing the file and creating video instances, as well as initializes
@@ -79,10 +81,11 @@ public class XMLController {
 	 */
 	public void initializeVideoXMLControl(List<Video> videoList, File masterFile) throws FileNotFoundException, 
 	SAXException, IOException, ParserConfigurationException, TransformerException {
-		myVideosDocument = myBuilder.parse(new FileInputStream(masterFile));
+		myXMLFile = masterFile;
+		myVideosDocument = myBuilder.parse(new FileInputStream(myXMLFile));
 		myVideoParser = new VideoXMLParser(myVideosDocument);	
 		myVideoParser.buildVideos(videoList);
-		myVideoWriter = new VideoXMLWriter(myVideosDocument, myVideoParser.getVideoNodeMap(), masterFile);	
+		myVideoWriter = new VideoXMLWriter(myVideosDocument, myVideoParser.getVideoNodeMap(), myXMLFile);	
 		if(!myVideoParser.isFileInitialized()){
 			myVideoWriter.initializeMasterFile();
 		}
@@ -105,8 +108,23 @@ public class XMLController {
 	public void initializeProfile(String initials) throws TransformerException {
 		myProfileWriter.writeProfileXML(initials);
 	}
+	
+	public void appendInitialsToFile() {
+		File desktopFile = new File(System.getProperty("user.home") + "/Desktop/" + getNewFileEnding());
+		if(desktopFile.exists()) desktopFile.setWritable(true);
+		Path desktopPath = desktopFile.toPath();
+		try {
+			Files.copy(myXMLFile.toPath(), desktopPath, REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-	public String getInitials() {
-		return myProfileParser.getInitials();
+	private String getNewFileEnding() {
+		String originalPath = myXMLFile.getAbsolutePath();
+		String originalPathFileEnding = originalPath.substring(originalPath.indexOf("kogo_"));
+		String initials = myProfileParser.getInitials();
+		return originalPathFileEnding.replace("kogo_", "kogo_" + initials + "_");
 	}
 }
