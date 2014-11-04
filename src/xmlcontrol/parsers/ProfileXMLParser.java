@@ -34,12 +34,7 @@ public class ProfileXMLParser extends XMLParser {
 				.getAttribute(INITIALIZED).equalsIgnoreCase("true");
 	}
 
-	/**
-	 * This method is called when the driver has finished driving and the file
-	 * name needs to be changed.
-	 * @return the initials of the driver.
-	 */
-	public String getInitials() {
+	public String getDriverInitialsFromXML() {
 		Element initialsNode = (Element) myDocument.getDocumentElement()
 				.getElementsByTagName(INITIALS).item(0);
 		return initialsNode.getTextContent();

@@ -68,7 +68,7 @@ public class VideoXMLWriter extends XMLWriter {
 	 * @param video
 	 * @throws TransformerException
 	 */
-	public void editDrivingStats(Video video) throws TransformerException{
+	public void editDrivingStats(Video video) {
 		Element videoElement = (Element) myVideoNodeMap.get(video);
 		videoElement.setAttribute(VideoXMLParser.PLAYS, "" + video.getMyPlays());
 		super.writeFile(myDocument, myFile);

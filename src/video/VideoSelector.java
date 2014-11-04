@@ -24,9 +24,8 @@ public class VideoSelector {
 	 */
 	public Video selectVideoFrom(Object[] playableVideos){
 		int numPlayableVideos = playableVideos.length;
-		if(numPlayableVideos > 0){
-			return (Video) playableVideos[myRandomGenerator.nextInt(numPlayableVideos)];
-		}		
+		if(numPlayableVideos > 0)
+			return (Video) playableVideos[myRandomGenerator.nextInt(numPlayableVideos)];	
 		return null;		
 	}	
 }

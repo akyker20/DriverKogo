@@ -3,17 +3,12 @@ package control;
 import gui.GUIController;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
-import org.xml.sax.SAXException;
 
 import video.Video;
 import video.VideoSelector;
@@ -46,9 +41,7 @@ public class Controller extends Application {
 	/**
 	 * This method is called after the driver drags and drops the XML File.
 	 */
-	public void initializeDrivingEnvironment(File deliverableDirectory, File xmlFile) 
-			throws FileNotFoundException, ParserConfigurationException, 
-			SAXException, IOException, TransformerException {
+	public void initializeDrivingEnvironment(File deliverableDirectory, File xmlFile)  {
 		myDeliverableDirectory = deliverableDirectory;
 		myVideoList = new ArrayList<Video>();
 		myXMLController.initializeVideoXMLControl(myVideoList, xmlFile);
@@ -112,7 +105,7 @@ public class Controller extends Application {
 		return myXMLController.isDriverProfileInitialized();
 	}
 
-	public void submitProfileInformation(String initials) throws TransformerException {
+	public void submitProfileInformation(String initials) {
 		myXMLController.initializeProfile(initials);
 		myGUIController.showDragAndDropScene();
 	}

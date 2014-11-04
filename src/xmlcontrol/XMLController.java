@@ -47,11 +47,6 @@ public class XMLController {
 	 * and an XMLWriter instance. Determines if the file has been initialized.
 	 * @param videoList - a reference to the list of videos.
 	 * @param masterFile - the xml file the driver dragged and dropped.
-	 * @throws ParserConfigurationException
-	 * @throws FileNotFoundException
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws TransformerException
 	 */
 	public XMLController() 
 			throws ParserConfigurationException, FileNotFoundException, SAXException, 
@@ -71,23 +66,21 @@ public class XMLController {
 	 * This method is called after the driver has dragged and dropped a valid file.
 	 * It begins parsing the file and creating video instances, as well as initializes
 	 * the xml video writer that will allow for changes to be made and recorded.
-	 * @param videoList
-	 * @param masterFile
-	 * @throws FileNotFoundException
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws TransformerException
 	 */
-	public void initializeVideoXMLControl(List<Video> videoList, File masterFile) throws FileNotFoundException, 
-	SAXException, IOException, ParserConfigurationException, TransformerException {
-		myXMLFile = masterFile;
-		myVideosDocument = myBuilder.parse(new FileInputStream(myXMLFile));
-		myVideoParser = new VideoXMLParser(myVideosDocument);	
-		myVideoParser.buildVideos(videoList);
-		myVideoWriter = new VideoXMLWriter(myVideosDocument, myVideoParser.getVideoNodeMap(), myXMLFile);	
-		if(!myVideoParser.isFileInitialized()){
-			myVideoWriter.initializeMasterFile();
+	public void initializeVideoXMLControl(List<Video> videoList, File masterFile) {
+		try {
+			myXMLFile = masterFile;
+			myVideosDocument = myBuilder.parse(new FileInputStream(myXMLFile));
+			myVideoParser = new VideoXMLParser(myVideosDocument);	
+			myVideoParser.buildVideos(videoList);
+			myVideoWriter = new VideoXMLWriter(myVideosDocument, myVideoParser.getVideoNodeMap(), myXMLFile);	
+			if(!myVideoParser.isFileInitialized()){
+				myVideoWriter.initializeMasterFile();
+			}
+		}
+		catch(Throwable t){
+			//todo
+			t.printStackTrace();
 		}
 	}
 
@@ -97,7 +90,7 @@ public class XMLController {
 	 * @param videoCompleted - the video that was completed.
 	 * @throws TransformerException
 	 */
-	public void updateXML(Video videoCompleted) throws TransformerException {
+	public void updateXML(Video videoCompleted) {
 		myVideoWriter.editDrivingStats(videoCompleted);
 	}
 
@@ -105,7 +98,7 @@ public class XMLController {
 		return myProfileParser.isFileInitialized();
 	}
 
-	public void initializeProfile(String initials) throws TransformerException {
+	public void initializeProfile(String initials) {
 		myProfileWriter.writeProfileXML(initials);
 	}
 	
@@ -124,7 +117,7 @@ public class XMLController {
 	private String getNewFileEnding() {
 		String originalPath = myXMLFile.getAbsolutePath();
 		String originalPathFileEnding = originalPath.substring(originalPath.indexOf("kogo_"));
-		String initials = myProfileParser.getInitials();
+		String initials = myProfileParser.getDriverInitialsFromXML();
 		return originalPathFileEnding.replace("kogo_", "kogo_" + initials + "_");
 	}
 }

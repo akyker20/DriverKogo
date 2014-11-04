@@ -42,7 +42,7 @@ public class ProfileXMLWriter extends XMLWriter {
 	 * @param document
 	 * @throws TransformerException
 	 */
-	public void writeProfileXML(String initials) throws TransformerException{
+	public void writeProfileXML(String initials) {
 		Element profileNode = myDocument.getDocumentElement();
 		profileNode.setAttribute(VideoXMLParser.INITIALIZED, "true");
 		Element initialsNode = myDocument.createElement("initials");

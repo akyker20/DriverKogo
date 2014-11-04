@@ -1,7 +1,6 @@
 package gui.scenes;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import javafx.scene.Group;
@@ -11,12 +10,6 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.xml.sax.SAXException;
-
 import control.Controller;
 
 /**
@@ -38,10 +31,14 @@ public class DragFileScene extends Scene {
 		super(root);
 		myGroup = root;
 		myControl = control;
-		this.addInstructionsToBottomRight();
+		setupEventListeners();
+		addInstructionsToBottomRight();
+	}
+
+	private void setupEventListeners() {
 		this.setOnDragOver(event->handleDragOver(event));
 		this.setOnDragExited(event->DragFileScene.this.setFill(Color.WHITE));
-		this.setOnDragDropped(event->handleDropFile(event));
+		this.setOnDragDropped(event->handleDropFile(event));	
 	}
 
 	private void addInstructionsToBottomRight() {
@@ -57,26 +54,30 @@ public class DragFileScene extends Scene {
 		if (db.hasFiles()) {
 			success = true;
 			for (File directory:db.getFiles()) {
-				String filePath = directory.getAbsolutePath();
-				if(directory.isDirectory() && filePath.contains(getAppropriateFileName())){
-					try {
-						File xmlFile = null;
-						for(File file:directory.listFiles()){
-							if(file.getAbsolutePath().contains("kogo")){
-								xmlFile = file;
-							}
-						}
-						myControl.initializeDrivingEnvironment(directory, xmlFile);
-					} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
-						e.printStackTrace();
-					}
+				if(isValidKogoDirectory(directory)){
+					File xmlFile = getXMLFileFromDirectory(directory);
+					myControl.initializeDrivingEnvironment(directory, xmlFile);
 				}
 			}
 		}
 		event.setDropCompleted(success);
 		event.consume();
 	}
-	
+
+	private boolean isValidKogoDirectory(File directory) {
+		String filePath = directory.getAbsolutePath();
+		return directory.isDirectory() && filePath.contains(getAppropriateFileName());
+	}
+
+	private File getXMLFileFromDirectory(File directory) {
+		for(File file:directory.listFiles()){
+			if(file.getAbsolutePath().contains("kogo")){
+				return file;
+			}
+		}
+		return null;
+	}
+
 	private void handleDragOver(DragEvent event) {
 		Dragboard db = event.getDragboard();
 		if (db.hasFiles()) {
@@ -89,14 +90,14 @@ public class DragFileScene extends Scene {
 
 	private CharSequence getAppropriateFileName() {
 		LocalDateTime now = LocalDateTime.now(); 
-		String date = now.getMonthValue() + "-" + formatDay(now.getDayOfMonth()) + "-" + now.getYear();
-		return "deliverable_" + date;
+		String date = now.getMonthValue() + "-" + formatDayToHaveTwoDigits(now.getDayOfMonth()) + 
+				"-" + now.getYear();
+		return "deliverable_".concat(date);
 	}
 
-	private String formatDay(int dayOfMonth) {
-		if(dayOfMonth < 10){
+	private String formatDayToHaveTwoDigits(int dayOfMonth) {
+		if(dayOfMonth < 10)
 			return "0" + dayOfMonth;
-		}
 		return ""+dayOfMonth;
 	}
 }

@@ -77,6 +77,7 @@ public class GUIController {
 	}
 
 	public void showStartRideScreen(){
+		myStage.setFullScreen(false);
 		myDrivingScene.showStartRideScreen();
 		showScene(myDrivingScene, START_RIDE_TITLE);
 	}

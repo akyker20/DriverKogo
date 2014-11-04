@@ -40,11 +40,16 @@ public abstract class XMLWriter {
 	 * @param xmlFile
 	 * @throws TransformerException
 	 */
-	protected void writeFile(Document document, File xmlFile) throws TransformerException {
+	protected void writeFile(Document document, File xmlFile) {
 		xmlFile.setWritable(true);
 		StreamResult result = new StreamResult(xmlFile);
-		myTransformer.transform(new DOMSource(document), result);
-		xmlFile.setReadOnly();
-		System.out.println("File saved!");
+		try {
+			myTransformer.transform(new DOMSource(document), result);
+			xmlFile.setReadOnly();
+			System.out.println("File saved!");
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
