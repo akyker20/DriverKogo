@@ -5,6 +5,7 @@ import gui.scenes.FinishedDrivingScene;
 import gui.scenes.ProfileSetupScene;
 import gui.scenes.DrivingScene;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import video.Video;
@@ -19,13 +20,14 @@ import control.Controller;
  */
 public class GUIController {
 
+	private static final String EXIT_FULLSCREEN_HINT = "Press spacebar to pause and complete ride";
 	public static final int SCREEN_WIDTH = 600;
 	public static final int SCREEN_HEIGHT = 300;
 
 	private static final String AD_PLAYER_TITLE = "Ad Player";
 	private static final String START_RIDE_TITLE = "Start Ride";
-	private static final String FINISHED_RIDING_TITLE = "Finished Riding";
-	private static final String NO_MORE_VIDEOS_TITLE = "No More Videos";
+	private static final String FINISHED_DRIVING_TITLE = "Finished Driving";
+	private static final String NO_MORE_PLAYABLE_VIDEOS_TITLE = "No More Videos";
 	private static final String DRAG_AND_DROP_TITLE = "Drag Kogo File";
 	private static final String PROFILE_SETUP_TITLE = "Kogo Setup";
 
@@ -36,90 +38,60 @@ public class GUIController {
 	public GUIController(Stage stage, Controller control){
 		myStage = stage;
 		myController = control;
-		configureStageAndDisplayDragFileScene();
+		configureStageAndDisplayInitialScene();
 	}
 
-	/**
-	 * On load, the drag and drop screen is displayed to the user. The program needs
-	 * the driver XML File before it can start showing advertisement clips.
-	 */
-	private void configureStageAndDisplayDragFileScene(){
-		myStage.setResizable(false);
-		if(myController.isProfileInitialized()){
+	private void configureStageAndDisplayInitialScene(){
+		if(myController.isDriverProfileInitialized())
 			showDragAndDropScene();
-		}
-		else {
+		else
 			showProfileSetupScene();
-		}
+		myStage.setResizable(false);
 		myStage.show();
 	}
 
-	private void showProfileSetupScene() {
-		myStage.setTitle(PROFILE_SETUP_TITLE);
-		myStage.setScene(new ProfileSetupScene(new BorderPane(), myController));
-	}
-
-	public void showDragAndDropScene() {
-		myStage.setTitle(DRAG_AND_DROP_TITLE);
-		myStage.setScene(new DragFileScene(new Group(), myController));
-	}
-
-	/**
-	 * Adds the video playing scene to the stage. Sets the stage to be full screen
-	 * and presents the driver with a hint on how to pause and complete rides.
-	 * @param video
-	 */
 	public void showVideo(Video video){
 		myDrivingScene.showVideo(video);
 		myStage.setTitle(AD_PLAYER_TITLE);
-		myStage.setFullScreenExitHint("Press spacebar to pause and complete ride");
-		myStage.setFullScreen(true);
+		makeWindowFullScreen();
 	}
 
-	/**
-	 * If the stage is not full screen already, it is made full screen and a hint
-	 * is displayed to driver reminding them how to pause a video and complete a ride.
-	 */
-	public void makeFullScreen() {
+	public void makeWindowFullScreen() {
 		if(!myStage.isFullScreen()){
-			myStage.setFullScreenExitHint("Press spacebar to pause and complete ride");
+			myStage.setFullScreenExitHint(EXIT_FULLSCREEN_HINT);
 			myStage.setFullScreen(true);
 		}
 	}
-
-	/**
-	 * Displays the start ride screen to the driver which asks for the number of
-	 * students in the ride.
-	 */
-	public void showStartRideScreen(){
-		myDrivingScene.showStartRideScreen();
-		myStage.setScene(myDrivingScene);
-		myStage.setTitle(START_RIDE_TITLE);
-	}
-
-	/**
-	 * If no videos exist with unused views, the driver is shown the
-	 * "Not Enough Videos Screen" and instructed that they will not be 
-	 * paid for continued driving. Hopefully, drivers won't see this screen!
-	 */
-	public void notEnoughVideos() {
-		myDrivingScene.showNotEnoughVideos();
-		myStage.setScene(myDrivingScene);
-		myStage.setTitle(NO_MORE_VIDEOS_TITLE);
-	}
-
-	/**
-	 * The Finished Driving Scene is displayed to the user after they select
-	 * "Finish Driving" from the file menu. They are instructed to send their
-	 * XML file to the owners.
-	 */
-	public void showFinishedDrivingScreen() {
-		myStage.setTitle(FINISHED_RIDING_TITLE);
-		myStage.setScene(new FinishedDrivingScene(new BorderPane()));
-	}
-
+	
 	public void setupDrivingEnvironment() {
 		myDrivingScene = new DrivingScene(new BorderPane(), myController, this);
-		myStage.setScene(myDrivingScene);
+		showStartRideScreen();
+	}
+	
+	private void showProfileSetupScene() {
+		showScene(new ProfileSetupScene(new BorderPane(), myController), PROFILE_SETUP_TITLE);
+	}
+
+	public void showDragAndDropScene() {
+		showScene(new DragFileScene(new Group(), myController), DRAG_AND_DROP_TITLE);
+	}
+
+	public void showStartRideScreen(){
+		myDrivingScene.showStartRideScreen();
+		showScene(myDrivingScene, START_RIDE_TITLE);
+	}
+
+	public void showNoMorePlayableVideosScene() {
+		myDrivingScene.showNoMorePlayableVideosScreen();
+		showScene(myDrivingScene, NO_MORE_PLAYABLE_VIDEOS_TITLE);
+	}
+
+	public void showFinishedDrivingScreen() {
+		showScene(new FinishedDrivingScene(new BorderPane()), FINISHED_DRIVING_TITLE);
+	}
+	
+	private void showScene(Scene scene, String sceneTitle) {
+		myStage.setScene(scene);
+		myStage.setTitle(sceneTitle);
 	}
 }

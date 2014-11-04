@@ -45,14 +45,6 @@ public class Controller extends Application {
 
 	/**
 	 * This method is called after the driver drags and drops the XML File.
-	 * It initializes the XMLController and allows the GUIController to
-	 * configure the ride screen.
-	 * @param file
-	 * @throws FileNotFoundException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws TransformerException
 	 */
 	public void initializeDrivingEnvironment(File deliverableDirectory, File xmlFile) 
 			throws FileNotFoundException, ParserConfigurationException, 
@@ -64,83 +56,50 @@ public class Controller extends Application {
 		myGUIController.setupDrivingEnvironment();
 	}
 
-	/**
-	 * When a video is played, myNumPassengers is set so that when another
-	 * video is played this class has access to the number of passengers.
-	 * A video is selected and that video is passed to the GUIController
-	 * so that the stage will show the video-playing scene.
-	 * @param numPassengers
-	 */
 	public void playVideo(int numPassengers){
 		myNumPassengers = numPassengers;
 		myGUIController.showVideo(myVideoSelector.selectVideoFrom(getPlayableVideos()));
 	}
 
-	/**
-	 * If any videos exist that still have views, the playVideo function
-	 * is called. Otherwise, the GUIController is called to display the
-	 * not enough videos scene.
-	 */
 	public void playAnotherVideo() {
 		if(canPlayVideos())
 			playVideo(myNumPassengers);		
 		else
-			myGUIController.notEnoughVideos();
+			myGUIController.showNoMorePlayableVideosScene();
+	}
+	
+	public boolean canPlayVideos() {
+		return getPlayableVideos().length > 0;
 	}
 
 	/**
 	 * If there any videos that have not been played this ride, a random
 	 * video is selected from this set. Otherwise, if there are any videos
 	 * that have views remaining, a random video from this set is selected.
-	 * @return
 	 */
 	public Object[] getPlayableVideos(){
-		Object[] playableUnplayedVideos = myVideoList.stream()
+		Object[] playableUnplayedVideosThisRide = myVideoList.stream()
 				.filter(Video::canPlay).toArray();
-		if (playableUnplayedVideos.length > 0)
-			return playableUnplayedVideos;
-		else{
+		if (playableUnplayedVideosThisRide.length > 0)
+			return playableUnplayedVideosThisRide;
+		else
 			return myVideoList.stream()
 					.filter(Video::hasPlaysRemaining).toArray();
-		}
 	}
 
 	/**
-	 * If there are videos that have not been played this ride, or
-	 * if there are videos that have remaining views.
-	 * @return
+	 * Called when a video is completed during a ride.
 	 */
-	public boolean canPlayVideos() {
-		return getPlayableVideos().length > 0;
-	}
-
-	/**
-	 * Called when a video is completed. The video's play attribute is incremented
-	 * according to the number of passengers.
-	 * The master XML File is edited to reflect these changes.
-	 * @param videoCompleted
-	 * @throws TransformerException
-	 */
-	public void completedVideo(Video videoCompleted) throws TransformerException {
+	public void completedVideoDuringRide(Video videoCompleted) throws TransformerException {
 		videoCompleted.addViews(myNumPassengers);
 		myXMLController.updateXML(videoCompleted);
 	}
 
-	/**
-	 * Adds the finished driving scene to the stage. This method is called when
-	 * the driver clicks File -> Finished Driving.
-	 */
 	public void finishDriving() {
 		myGUIController.showFinishedDrivingScreen();
 		myXMLController.appendInitialsToFile();
 	}
 
-	/**
-	 * Removes the VideoScene from the stage and replaces it with
-	 * the RideStarterScene so the driver can start a new ride. The method
-	 * also sets the alreadyPlayedThisRide attribute of each video to false.
-	 * This method is called when the driver clicks File -> Ride Completed.
-	 */
 	public void endRide() {
 		for(int i = 0; i < myVideoList.size(); i++){
 			myVideoList.get(i).prepareForNewRide();
@@ -148,8 +107,8 @@ public class Controller extends Application {
 		myGUIController.showStartRideScreen();
 	}
 
-	public boolean isProfileInitialized() {
-		return myXMLController.isProfileInitialized();
+	public boolean isDriverProfileInitialized() {
+		return myXMLController.isDriverProfileInitialized();
 	}
 
 	public void submitProfileInformation(String initials) throws TransformerException {
@@ -158,6 +117,6 @@ public class Controller extends Application {
 	}
 
 	public String getVideoDirPath() {
-		return myDeliverableDirectory.getAbsolutePath()+"/videos/";
+		return myDeliverableDirectory.getAbsolutePath().concat("/videos/");
 	}
 }

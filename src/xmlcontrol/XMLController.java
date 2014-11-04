@@ -101,7 +101,7 @@ public class XMLController {
 		myVideoWriter.editDrivingStats(videoCompleted);
 	}
 
-	public boolean isProfileInitialized() {
+	public boolean isDriverProfileInitialized() {
 		return myProfileParser.isFileInitialized();
 	}
 

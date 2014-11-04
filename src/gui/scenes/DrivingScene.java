@@ -41,7 +41,7 @@ public class DrivingScene extends Scene {
 				showMenu();
 			}
 			else if(code.equals(KeyCode.SPACE)){
-				myGUIController.makeFullScreen();
+				myGUIController.makeWindowFullScreen();
 				myVideoPane.play();
 				hideMenu();
 			}
@@ -52,10 +52,9 @@ public class DrivingScene extends Scene {
 		if(myControl.canPlayVideos()){
 			myRideStarterPane = new RideStarterPane(myControl);
 			myVideoPane = new VideoPane(myControl);
-			showStartRideScreen();
 		}
 		else {
-			showNotEnoughVideos();
+			showNoMorePlayableVideosScreen();
 		}
 	}
 
@@ -68,7 +67,7 @@ public class DrivingScene extends Scene {
 		hideMenu();
 	}
 
-	public void showNotEnoughVideos() {
+	public void showNoMorePlayableVideosScreen() {
 		myPane.getChildren().remove(myPane.getCenter());
 		myMenuFeature.configureFinishDrivingMenu();
 		myPane.setCenter(new NotEnoughVideosPane());

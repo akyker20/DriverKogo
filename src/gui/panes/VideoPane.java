@@ -71,7 +71,7 @@ public class VideoPane extends BorderPane {
 			@Override
 			public void run() {
 				try {
-					myControl.completedVideo(video);
+					myControl.completedVideoDuringRide(video);
 				} catch (TransformerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -100,5 +100,6 @@ public class VideoPane extends BorderPane {
 		width.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "width"));
 		height.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "height"));
 		myMediaView.setPreserveRatio(true);
+		isMediaViewInitialized = true;
 	}
 }
