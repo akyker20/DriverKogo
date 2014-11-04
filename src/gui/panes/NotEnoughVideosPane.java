@@ -4,7 +4,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
 /**
- * This scene is displayed when none of the videos have any unused views remaining.
+ * This scene is displayed when there are no playable video remaining.
  * @author Austin Kyker
  */
 public class NotEnoughVideosPane extends BorderPane {

@@ -39,34 +39,17 @@ public class VideoPane extends BorderPane {
 		this.setCenter(myMediaView);
 	}
 
-	public boolean isPlaying() {
-		return myMediaPlayer.getStatus() == Status.PLAYING;
-	}
-
-	/**
-	 * Plays the player and removes the menu.
-	 */
-	public void play() {
-		myMediaPlayer.play();
-	}
-
-	/**
-	 * Pauses the player and displays the menu.
-	 */
-	public void pause() {
-		myMediaPlayer.pause();
-	}
-
-	/**
-	 * Sets up the video in the media player and plays it. When a video ends,
-	 * the controller is notified so that changes can be made to the XML File.
-	 * Another video is then selected to be played.
-	 * @param video
-	 */
 	public void setUpVideo(Video video) {
-		File videoFile = new File(getPath(video));
-		Media media = new Media(videoFile.toURI().toString());
-		myMediaPlayer = new MediaPlayer(media);
+		setUpMediaPlayerWith(video);
+		myMediaView.setMediaPlayer(myMediaPlayer);
+		if(!isMediaViewInitialized){
+			initializeMediaViewSize();
+		}
+		play();
+	}
+
+	private void setUpMediaPlayerWith(Video video) {
+		myMediaPlayer = new MediaPlayer(getVideoMedia(video));
 		myMediaPlayer.setOnEndOfMedia(new Runnable(){
 			@Override
 			public void run() {
@@ -75,20 +58,31 @@ public class VideoPane extends BorderPane {
 				} catch (TransformerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-				myControl.playAnotherVideo();			
+				}			
 			}
 		});
-		myMediaView.setMediaPlayer(myMediaPlayer);
-		if(!isMediaViewInitialized){
-			initializeMediaViewSize();
-		}
+	}
+	
+	private Media getVideoMedia(Video video) {
+		File videoFile = new File(getPathToVideo(video));
+		return new Media(videoFile.toURI().toString());
+	}
+	
+	private String getPathToVideo(Video video) {
+		return myControl.getVideoDirPath() + video.getMyCompany().replace(" ", "") + 
+				"_" + video.getMyName() + ".mp4";
+	}
+	
+	public void play() {
 		myMediaPlayer.play();
 	}
 
-	private String getPath(Video video) {
-		return myControl.getVideoDirPath() + video.getMyCompany().replace(" ", "") + 
-				"_" + video.getMyName() + ".mp4";
+	public void pause() {
+		myMediaPlayer.pause();
+	}
+
+	public boolean isPlaying() {
+		return myMediaPlayer.getStatus() == Status.PLAYING;
 	}
 
 	/**

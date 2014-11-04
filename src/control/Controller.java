@@ -56,14 +56,14 @@ public class Controller extends Application {
 		myGUIController.setupDrivingEnvironment();
 	}
 
-	public void playVideo(int numPassengers){
+	public void selectAndPlayVideo(int numPassengers){
 		myNumPassengers = numPassengers;
 		myGUIController.showVideo(myVideoSelector.selectVideoFrom(getPlayableVideos()));
 	}
 
 	public void playAnotherVideo() {
 		if(canPlayVideos())
-			playVideo(myNumPassengers);		
+			selectAndPlayVideo(myNumPassengers);		
 		else
 			myGUIController.showNoMorePlayableVideosScene();
 	}
@@ -93,6 +93,7 @@ public class Controller extends Application {
 	public void completedVideoDuringRide(Video videoCompleted) throws TransformerException {
 		videoCompleted.addViews(myNumPassengers);
 		myXMLController.updateXML(videoCompleted);
+		playAnotherVideo();
 	}
 
 	public void finishDriving() {

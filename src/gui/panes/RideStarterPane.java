@@ -10,44 +10,55 @@ import javafx.scene.layout.VBox;
 import control.Controller;
 
 /**
- * This scene allows the user to select the number of passengers in a ride.
- * This scene is displayed before every ride.
+ * This screen allows the user to select the number of passengers that will be in riding.
+ * This screen is displayed before every ride.
  * @author Austin Kyker
  */
 public class RideStarterPane extends BorderPane {
 
-    private static final String STYLESHEET_PACKAGE = "Stylesheets/";
+    private static final String BTN_CSS_CLASS = "numPassengersButton";
+	private static final String STYLESHEET_PACKAGE = "Stylesheets/";
     private static final String BUTTON_INSTRUCTIONS = "Number of Students Riding...";
+	private static final int SPACE_BTW_BTNS = 10;
     
 	private Controller myControl;
+	private HBox myButtonHolder;
+	private Label myInstructions;
 	
 	public RideStarterPane(Controller control) {
 		myControl = control;
+		createGraphicalComponents();
+		addGraphicalComponentsToPane();
 		this.getStylesheets().add(STYLESHEET_PACKAGE + "style.css");
-		
-		HBox buttonHolder = new HBox(10);
-		buttonHolder.setId("ButtonHolder");
-		buttonHolder.getChildren().addAll(makeButton(1), makeButton(2), makeButton(3));
-		
+	}
+
+	private void addGraphicalComponentsToPane() {
 		VBox container = new VBox(5);
 		container.setPadding(new Insets(10));
-		Label label = new Label(BUTTON_INSTRUCTIONS);
-		container.getChildren().addAll(buttonHolder, label);
 		container.setAlignment(Pos.BASELINE_RIGHT);
-		
+		container.getChildren().addAll(myButtonHolder, myInstructions);
 		this.setCenter(container);
 	}
 
-	/**
-	 * Helper method to create buttons. When a button is clicked the controller
-	 * is called with the number of passengers to play videos.
-	 * @param numPassengers
-	 * @return
-	 */
+	private void createGraphicalComponents() {
+		createButtonHolderWithButtons();
+		createInstructionsLabel();
+	}
+	
+	private void createButtonHolderWithButtons() {
+		myButtonHolder = new HBox(SPACE_BTW_BTNS);
+		myButtonHolder.setId("ButtonHolder");
+		myButtonHolder.getChildren().addAll(makeButton(1), makeButton(2), makeButton(3));
+	}
+
+	private void createInstructionsLabel() {
+		myInstructions = new Label(BUTTON_INSTRUCTIONS);
+	}
+
 	private Button makeButton(int numPassengers) {
 		Button button = new Button(""+numPassengers);
-		button.setOnAction(event -> myControl.playVideo(numPassengers));
-		button.getStyleClass().add("numPassengersButton");
+		button.setOnAction(event -> myControl.selectAndPlayVideo(numPassengers));
+		button.getStyleClass().add(BTN_CSS_CLASS);
 		return button;
 	}
 }
