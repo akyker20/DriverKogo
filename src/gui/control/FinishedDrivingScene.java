@@ -1,7 +1,5 @@
-package gui.scenes;
+package gui.control;
 
-import gui.GUIController;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
@@ -11,9 +9,12 @@ import javafx.scene.layout.BorderPane;
  * @author Austin Kyker
  *
  */
-public class FinishedDrivingScene extends Scene {
+public class FinishedDrivingScene extends ControlScene {
+	
+	private static final String TITLE = "Finished Driving";
+	
 	public FinishedDrivingScene(BorderPane pane) {
-		super(pane, GUIController.SCREEN_WIDTH, GUIController.SCREEN_HEIGHT);
+		super(pane, TITLE);
 		Label label = new Label("You have successfully completed a Kogo Driving\n"
 				+ " session. Please send Austin the file that was\n"
 				+ " saved to your desktop.");

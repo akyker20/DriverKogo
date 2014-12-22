@@ -1,7 +1,8 @@
-package gui.panes;
+package gui.control;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -14,18 +15,22 @@ import control.Controller;
  * This screen is displayed before every ride.
  * @author Austin Kyker
  */
-public class RideStarterPane extends BorderPane {
+public class RideStarterScene extends ControlScene {
 
     private static final String BTN_CSS_CLASS = "numPassengersButton";
 	private static final String STYLESHEET_PACKAGE = "Stylesheets/";
     private static final String BUTTON_INSTRUCTIONS = "Number of Students Riding...";
 	private static final int SPACE_BTW_BTNS = 10;
+	private static final String TITLE = "Start Ride";
     
 	private Controller myControl;
 	private HBox myButtonHolder;
 	private Label myInstructions;
+	private BorderPane myPane;
 	
-	public RideStarterPane(Controller control) {
+	public RideStarterScene(BorderPane pane, Controller control) {
+		super(pane, TITLE);
+		myPane = pane;
 		myControl = control;
 		createGraphicalComponents();
 		addGraphicalComponentsToPane();
@@ -37,7 +42,7 @@ public class RideStarterPane extends BorderPane {
 		container.setPadding(new Insets(10));
 		container.setAlignment(Pos.BASELINE_RIGHT);
 		container.getChildren().addAll(myButtonHolder, myInstructions);
-		this.setCenter(container);
+		myPane.setCenter(container);
 	}
 
 	private void createGraphicalComponents() {

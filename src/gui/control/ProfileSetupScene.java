@@ -1,6 +1,4 @@
-package gui.scenes;
-
-import gui.GUIController;
+package gui.control;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +25,7 @@ public class ProfileSetupScene extends Scene {
 	private Controller myControl;
 
 	public ProfileSetupScene(BorderPane pane, Controller control) {
-		super(pane, GUIController.SCREEN_WIDTH, GUIController.SCREEN_HEIGHT);
+		super(pane);
 		myControl = control;
 		createInitialsTextFieldsAndSubmitBtn();
 		VBox centerContainer = new VBox(15);

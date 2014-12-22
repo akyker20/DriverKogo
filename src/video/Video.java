@@ -1,42 +1,39 @@
 package video;
 
-public class Video {
+public abstract class Video {
 
-	public static final double CENTS_PER_SECOND = 0.01;
+	public static final double CENTS_PER_SECOND = 0.010;
 
 	private String myCompany;
 	private String myName;
-	private int myMaxPlays;
+	protected int myPlays;
 	private int myLength;
-	private int myPlays;
-	private boolean alreadyPlayedThisRide;
+	private double myRevenue;
+	private int myTotalPlaysPurchased;
 
-	/**
-	 * If the master XML File is not initialized then none of the videos have
-	 * been played. Therefore there is no completedPlays input and myPlays is
-	 * set to 0.
-	 */
-	public Video(String company, String name, int maxPlays, int length){
-		this(company, name, 0, maxPlays, length);
-	}
-
-	/**
-	 * If the master file was already initialized then each video will have some number
-	 * of plays. This constructor sets myPlays to the input playsCompleted.
-	 * @param playsCompleted - the number of times the video has already been played.
-	 * @param maxPlays - the maximum number of times the video can be played.
-	 */
-	public Video(String company, String name, int playsCompleted, int maxPlays, int length){
+	public Video(String company, String name, int length,
+			int totalPlaysPurchased, int plays) {
 		myCompany = company;
 		myName = name;
-		myMaxPlays = maxPlays;
 		myLength = length;
-		myPlays = playsCompleted;
-		alreadyPlayedThisRide = false;
+		myTotalPlaysPurchased = totalPlaysPurchased;
+		myPlays = plays;
+	}
+
+	public int getMyPlaysPurchased() {
+		return myTotalPlaysPurchased;
+	}
+
+	public int getMyPlays() {
+		return myPlays;
 	}
 
 	public String getMyName() {
 		return myName;
+	}
+
+	public void setMyName(String myName) {
+		this.myName = myName;
 	}
 
 	public int getMyLength() {
@@ -46,29 +43,31 @@ public class Video {
 	public String getMyCompany() {
 		return myCompany;
 	}
-	
-	public int getMyPlays() {
-		return myPlays;
+
+	public void setMyCompany(String myCompany) {
+		this.myCompany = myCompany;
 	}
 
-	public int getMyMaxPlays() {
-		return myMaxPlays;
+	public boolean sameAs(ActiveVideo other) {
+		return other.getMyCompany().equals(myCompany)
+				&& other.getMyName().equals(myName);
 	}
 
-	public boolean canPlay(){
-		return hasPlaysRemaining() && !alreadyPlayedThisRide;
+	public double getMyRevenue() {
+		myRevenue = myLength * CENTS_PER_SECOND * getMyPlays();
+		return Math.round(myRevenue * 100.00) / 100.00;
 	}
 
-	public boolean hasPlaysRemaining(){
-		return myPlays < myMaxPlays;
-	}
+	public abstract void addStudentViews(int numViews);
 
-	public void addViews(int numPassengers) {
-		myPlays += numPassengers;
-		alreadyPlayedThisRide = true;
-	}
-
-	public void prepareForNewRide(){
-		alreadyPlayedThisRide = false;
+	@Override
+	public boolean equals(Object otherVideo) {
+		if (otherVideo == null) {
+			return false;
+		}
+		return this.getMyCompany().equalsIgnoreCase(
+				((Video) otherVideo).getMyCompany())
+				&& this.getMyName().equalsIgnoreCase(
+						((Video) otherVideo).getMyName());
 	}
 }

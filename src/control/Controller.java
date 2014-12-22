@@ -1,116 +1,136 @@
 package control;
 
-import gui.GUIController;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import gson.GSONFileReader;
+import gson.GSONFileWriter;
+import gui.control.ControlStage;
+import gui.player.VideoStage;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-
-import javax.xml.transform.TransformerException;
-
-import video.Video;
-import video.VideoSelector;
-import xmlcontrol.XMLController;
+import utilities.ErrorPopup;
+import video.ActiveVideo;
+import video.VideoManager;
 
 /**
  * This class serves as a controller between Video (the backend) and the
- * GUIController  (the head of the front-end). It promotes a seperation
- * between front-end and back-end.
+ * GUIController (the head of the front-end). It promotes a seperation between
+ * front-end and back-end.
+ * 
  * @author Austin Kyker
  *
  */
 public class Controller extends Application {
 
-	private GUIController myGUIController;
-	private VideoSelector myVideoSelector;
-	private ArrayList<Video> myVideoList;
-	private int myNumPassengers;
-	private XMLController myXMLController;
-	private File myDeliverableDirectory;
+	private static final String COPY_DRIVER_SESSION_ERROR = "Could not copy driver session file to desktop. "
+			+ "Don't panic, just call Austin at 317-979-7549";
+	public static final GSONFileReader GSON_READER = new GSONFileReader();
+	public static final GSONFileWriter GSON_WRITER = new GSONFileWriter();
 
-	public static void main(String[] args){ launch(args); }
+	private File myDeliverableDirectory;
+	private VideoStage myVideoStage;
+	private ControlStage myControlStage;
+	private VideoManager myVideoManager;
+	private int myNumPassengers;
+	private File myJsonVideoFile;
+
+	public static void main(String[] args) {
+		launch(args);
+	}
 
 	@Override
-	public void start(Stage stage) throws Exception {
-		myXMLController = new XMLController();
-		myGUIController = new GUIController(stage, this);
+	public void start(Stage stage) {
+		myVideoStage = new VideoStage(this);
+		myVideoStage.setTitle("Video Stage");
+		myControlStage = new ControlStage(this);
 	}
 
 	/**
 	 * This method is called after the driver drags and drops the XML File.
 	 */
-	public void initializeDrivingEnvironment(File deliverableDirectory, File xmlFile)  {
+	public void initializeDrivingEnvironment(File deliverableDirectory,
+			File jsonVideoFile) {
 		myDeliverableDirectory = deliverableDirectory;
-		myVideoList = new ArrayList<Video>();
-		myXMLController.initializeVideoXMLControl(myVideoList, xmlFile);
-		myVideoSelector = new VideoSelector(this);	
-		myGUIController.setupDrivingEnvironment();
+		myVideoManager = new VideoManager(jsonVideoFile);
+		myJsonVideoFile = jsonVideoFile;
+		myControlStage.selectDrivingScene(myVideoManager.canSelectVideo());
 	}
 
-	public void selectAndPlayVideo(int numPassengers){
+	public void selectAndPlayVideo(int numPassengers) {
 		myNumPassengers = numPassengers;
-		myGUIController.showVideo(myVideoSelector.selectVideoFrom(getPlayableVideos()));
+		myVideoStage.playVideo(myVideoManager.selectVideo());
+		myControlStage.setupVideoControl();
 	}
 
 	public void playAnotherVideo() {
-		if(canPlayVideos())
-			selectAndPlayVideo(myNumPassengers);		
-		else
-			myGUIController.showNoMorePlayableVideosScene();
-	}
-	
-	public boolean canPlayVideos() {
-		return getPlayableVideos().length > 0;
-	}
-
-	/**
-	 * If there any videos that have not been played this ride, a random
-	 * video is selected from this set. Otherwise, if there are any videos
-	 * that have views remaining, a random video from this set is selected.
-	 */
-	public Object[] getPlayableVideos(){
-		Object[] playableUnplayedVideosThisRide = myVideoList.stream()
-				.filter(Video::canPlay).toArray();
-		if (playableUnplayedVideosThisRide.length > 0)
-			return playableUnplayedVideosThisRide;
-		else
-			return myVideoList.stream()
-					.filter(Video::hasPlaysRemaining).toArray();
+		if (myVideoManager.canSelectVideo())
+			selectAndPlayVideo(myNumPassengers);
+		else if(!myVideoManager.videoViewsStillExist()) {
+			myControlStage.showNoMorePlayableVideosScene();
+			myVideoStage.showKogoScene();
+		}
 	}
 
 	/**
 	 * Called when a video is completed during a ride.
 	 */
-	public void completedVideoDuringRide(Video videoCompleted) throws TransformerException {
+	public void completedVideoDuringRide(ActiveVideo videoCompleted) {
 		videoCompleted.addViews(myNumPassengers);
-		myXMLController.updateXML(videoCompleted);
+		myVideoManager.updateVideoJson();
 		playAnotherVideo();
 	}
 
 	public void finishDriving() {
-		myGUIController.showFinishedDrivingScreen();
-		myXMLController.appendInitialsToFile();
+		myVideoManager.terminateVideoDeliverable();
+		saveDriverSessionFileToDesktop();
 	}
 
 	public void endRide() {
-		for(int i = 0; i < myVideoList.size(); i++){
-			myVideoList.get(i).prepareForNewRide();
-		}
-		myGUIController.showStartRideScreen();
+		myVideoManager.resetVideosForNewRide();
 	}
 
 	public boolean isDriverProfileInitialized() {
-		return myXMLController.isDriverProfileInitialized();
+		ProfileInfo info = GSON_READER.getProfileInfo();
+		return info != null;
+	}
+
+	private void saveDriverSessionFileToDesktop() {
+		File desktopFile = new File(System.getProperty("user.home")
+				+ "/Desktop/" + getNewFileEnding());
+		if (desktopFile.exists())
+			desktopFile.setWritable(true);
+		Path desktopPath = desktopFile.toPath();
+		try {
+			Files.copy(myJsonVideoFile.toPath(), desktopPath, REPLACE_EXISTING);
+		} catch (IOException e) {
+			new ErrorPopup(COPY_DRIVER_SESSION_ERROR);
+		}
+	}
+
+	private String getNewFileEnding() {
+		String originalPath = myJsonVideoFile.getPath();
+		String originalPathFileEnding = originalPath.substring(originalPath
+				.indexOf("kogo_"));
+		String initials = GSON_READER.getProfileInfo().getInitials();
+		return originalPathFileEnding
+				.replace("kogo_", "kogo_" + initials + "_");
 	}
 
 	public void submitProfileInformation(String initials) {
-		myXMLController.initializeProfile(initials);
-		myGUIController.showDragAndDropScene();
+		GSON_WRITER.initializeDriverProfile(initials);
+		myControlStage.showDragAndDropScene();
 	}
 
 	public String getVideoDirPath() {
 		return myDeliverableDirectory.getAbsolutePath().concat("/videos/");
+	}
+
+	public boolean isDirectoryTerminated(File jsonFile) {
+		return GSON_READER.isDeliverableTerminated(jsonFile);
 	}
 }
