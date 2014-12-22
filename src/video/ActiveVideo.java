@@ -29,7 +29,7 @@ public class ActiveVideo extends Video {
 	}
 
 	public boolean canPlay() {
-		return !alreadyPlayedThisRide;
+		return !alreadyPlayedThisRide && hasPlaysRemaining();
 	}
 
 	public boolean hasPlaysRemaining() {

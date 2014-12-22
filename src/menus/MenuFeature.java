@@ -26,7 +26,7 @@ public class MenuFeature extends MenuBar {
         myFinishDrivingItem.setOnAction(event -> control.finishDriving());
         
         myEndRideItem = new MenuItem(RIDE_COMPLETED);
-        myEndRideItem.setOnAction(event -> control.endRide()); 
+        myEndRideItem.setOnAction(event -> control.endCurrentRide()); 
         
         fileMenu.getItems().addAll(myFinishDrivingItem, myEndRideItem);   
 		this.getMenus().add(fileMenu);

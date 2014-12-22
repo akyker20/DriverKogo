@@ -79,12 +79,15 @@ public class Controller extends Application implements Observer {
 	}
 
 	public void playAnotherVideo() {
-		if (myVideoManager.canSelectVideo())
+		if (myVideoManager.canSelectVideo()) {
 			selectAndPlayVideo();
+			return;
+		}
 		else if(!myVideoManager.videoViewsStillExist()) {
 			myControlStage.showNoMorePlayableVideosScene();
-			myVideoStage.showKogoScene();
 		}
+		myVideoManager.resetVideosForNewRide();
+		myVideoStage.showKogoScene();
 	}
 
 	/**
@@ -99,10 +102,6 @@ public class Controller extends Application implements Observer {
 	public void finishDriving() {
 		myVideoManager.terminateVideoDeliverable();
 		saveDriverSessionFileToDesktop();
-	}
-
-	public void endRide() {
-		myVideoManager.resetVideosForNewRide();
 	}
 
 	public boolean isDriverProfileInitialized() {
@@ -149,5 +148,9 @@ public class Controller extends Application implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		System.out.println("Validation successful.");
 		this.selectAndPlayVideo();		
+	}
+
+	public void endCurrentRide() {
+		myVideoManager.resetVideosForNewRide();
 	}
 }

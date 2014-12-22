@@ -24,6 +24,7 @@ public class VideoManager {
 		TransferVideoData data = 
 				Controller.GSON_READER.readVideosFromJSON(myJsonVideoFile);
 		myVideoList = data.getVideos();
+		resetVideosForNewRide();
 	}
 
 	public ActiveVideo selectVideo(){

@@ -23,7 +23,7 @@ public class ControlStage extends Stage {
 	}
 
 	private void initializeScenes() {
-		myKogoControlScene = new KogoControlScene(new BorderPane());
+		myKogoControlScene = new KogoControlScene(new BorderPane(), this);
 		myDragFileScene = new DragFileScene(new BorderPane(), myControl);
 		myProfileSetupScene = new ProfileSetupScene(new BorderPane(), myControl);
 		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane());
@@ -50,6 +50,10 @@ public class ControlStage extends Stage {
 
 	public void showFinishedDrivingScene() {
 		this.setScene(myFinishedDrivingScene);
+	}
+
+	public void showRideStarterScene() {
+		this.setScene(myRideStarterScene);
 	}
 
 }
