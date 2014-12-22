@@ -62,7 +62,7 @@ public class RideStarterScene extends ControlScene {
 
 	private Button makeButton(int numPassengers) {
 		Button button = new Button(""+numPassengers);
-		button.setOnAction(event -> myControl.selectAndPlayVideo(numPassengers));
+		button.setOnAction(event -> myControl.startRide(numPassengers));
 		button.getStyleClass().add(BTN_CSS_CLASS);
 		return button;
 	}

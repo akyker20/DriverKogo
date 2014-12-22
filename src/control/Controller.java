@@ -10,10 +10,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Observable;
+import java.util.Observer;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 import utilities.ErrorPopup;
+import utilities.Validator;
 import video.ActiveVideo;
 import video.VideoManager;
 
@@ -25,7 +28,7 @@ import video.VideoManager;
  * @author Austin Kyker
  *
  */
-public class Controller extends Application {
+public class Controller extends Application implements Observer {
 
 	private static final String COPY_DRIVER_SESSION_ERROR = "Could not copy driver session file to desktop. "
 			+ "Don't panic, just call Austin at 317-979-7549";
@@ -61,15 +64,23 @@ public class Controller extends Application {
 		myControlStage.selectDrivingScene(myVideoManager.canSelectVideo());
 	}
 
-	public void selectAndPlayVideo(int numPassengers) {
+	public void startRide(int numPassengers) {
 		myNumPassengers = numPassengers;
+		String initialsKey = GSON_READER.getProfileInfo().getInitials();
+		Validator val = new Validator(initialsKey, "Please validate this ride has " +
+		numPassengers + " passengers.");
+		val.addObserver(this);
+	}
+
+
+	private void selectAndPlayVideo() {
 		myVideoStage.playVideo(myVideoManager.selectVideo());
 		myControlStage.setupVideoControl();
 	}
 
 	public void playAnotherVideo() {
 		if (myVideoManager.canSelectVideo())
-			selectAndPlayVideo(myNumPassengers);
+			selectAndPlayVideo();
 		else if(!myVideoManager.videoViewsStillExist()) {
 			myControlStage.showNoMorePlayableVideosScene();
 			myVideoStage.showKogoScene();
@@ -132,5 +143,11 @@ public class Controller extends Application {
 
 	public boolean isDirectoryTerminated(File jsonFile) {
 		return GSON_READER.isDeliverableTerminated(jsonFile);
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		System.out.println("Validation successful.");
+		this.selectAndPlayVideo();		
 	}
 }
