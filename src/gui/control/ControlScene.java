@@ -6,7 +6,7 @@ import javafx.scene.layout.BorderPane;
 public class ControlScene extends Scene {
 	
 	private static final int SCREEN_WIDTH = 600;
-	private static final int SCREEN_HEIGHT = 300;
+	private static final int SCREEN_HEIGHT = 270;
 	
 	private String myTitle;
 

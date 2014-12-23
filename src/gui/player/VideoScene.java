@@ -2,14 +2,16 @@ package gui.player;
 
 import java.io.File;
 
-import control.Controller;
-import video.ActiveVideo;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.scene.media.MediaView;
+import video.ActiveVideo;
+import control.Controller;
 
 public class VideoScene extends Scene {
 
@@ -29,7 +31,7 @@ public class VideoScene extends Scene {
 		setUpMediaPlayerWith(video);
 		myMediaView.setMediaPlayer(myMediaPlayer);
 		if(!isMediaViewInitialized){
-			//			initializeMediaViewSize();
+			initializeMediaViewSize();
 		}
 		play();
 	}
@@ -66,17 +68,17 @@ public class VideoScene extends Scene {
 		return myMediaPlayer.getStatus() == Status.PLAYING;
 	}
 
-	//	/**
-	//	 * Allows the scene to be full sized. Only happens one time.
-	//	 */
-	//	private void initializeMediaViewSize() {
-	//		DoubleProperty width = myMediaView.fitWidthProperty();
-	//		DoubleProperty height = myMediaView.fitHeightProperty();
-	//		width.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "width"));
-	//		height.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "height"));
-	//		myMediaView.setPreserveRatio(true);
-	//		isMediaViewInitialized = true;
-	//	}
+	/**
+	 * Allows the scene to be full sized. Only happens one time.
+	 */
+	private void initializeMediaViewSize() {
+		DoubleProperty width = myMediaView.fitWidthProperty();
+		DoubleProperty height = myMediaView.fitHeightProperty();
+		width.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "width"));
+		height.bind(Bindings.selectDouble(myMediaView.sceneProperty(), "height"));
+		myMediaView.setPreserveRatio(true);
+		isMediaViewInitialized = true;
+	}
 }
 
 

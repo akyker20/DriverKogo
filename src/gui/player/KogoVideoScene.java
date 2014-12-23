@@ -7,8 +7,9 @@ import javafx.scene.layout.BorderPane;
 public class KogoVideoScene extends Scene {
 
 	public KogoVideoScene(BorderPane root) {
-		super(root, 600, 400);
+		super(root);
 		Label label = new Label("Kogo");
+		label.setStyle("-fx-font-size: 200px");
 		root.setCenter(label);	
 	}	
 }

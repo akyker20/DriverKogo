@@ -3,14 +3,11 @@ package gui.control;
 import java.io.File;
 import java.time.LocalDateTime;
 
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import utilities.ErrorPopup;
 import control.Controller;
 
@@ -78,10 +75,11 @@ public class DragFileScene extends ControlScene {
 	}
 
 	private boolean isCorrectDrivingDay(String filePath) {
-		if (!filePath.contains(getRequiredDirName())) {
+		boolean isCorrectDay = filePath.contains(getRequiredDirName());
+		if (!isCorrectDay) {
 			new ErrorPopup(WRONG_DEL_DAY_ERROR_MSG);
 		}
-		return true;
+		return isCorrectDay;
 	}
 
 	private File getVideoJsonFileFromDirectory(File directory) {

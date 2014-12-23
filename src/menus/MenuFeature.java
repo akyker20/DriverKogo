@@ -13,7 +13,6 @@ import javafx.scene.control.MenuItem;
 public class MenuFeature extends MenuBar {
 	
 	private static final String FINISHED_DRIVING = "Finished Driving";
-	private static final String RIDE_COMPLETED = "Ride Completed";
 	
 	private MenuItem myEndRideItem;
 	private MenuItem myFinishDrivingItem;
@@ -25,9 +24,6 @@ public class MenuFeature extends MenuBar {
         myFinishDrivingItem = new MenuItem(FINISHED_DRIVING);
         myFinishDrivingItem.setOnAction(event -> control.finishDriving());
         
-        myEndRideItem = new MenuItem(RIDE_COMPLETED);
-        myEndRideItem.setOnAction(event -> control.endCurrentRide()); 
-        
         fileMenu.getItems().addAll(myFinishDrivingItem, myEndRideItem);   
 		this.getMenus().add(fileMenu);
 		
@@ -36,10 +32,5 @@ public class MenuFeature extends MenuBar {
     public void configureFinishDrivingMenu(){
     	myFinishDrivingItem.setDisable(false);
     	myEndRideItem.setDisable(true);
-    }
-
-    public void configureEndRideMenu(){
-    	myFinishDrivingItem.setDisable(true);
-    	myEndRideItem.setDisable(false);
     }
 }

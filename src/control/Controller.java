@@ -102,6 +102,7 @@ public class Controller extends Application implements Observer {
 	public void finishDriving() {
 		myVideoManager.terminateVideoDeliverable();
 		saveDriverSessionFileToDesktop();
+		myControlStage.showFinishedDrivingScene();
 	}
 
 	public boolean isDriverProfileInitialized() {
@@ -146,11 +147,11 @@ public class Controller extends Application implements Observer {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		System.out.println("Validation successful.");
 		this.selectAndPlayVideo();		
 	}
 
 	public void endCurrentRide() {
 		myVideoManager.resetVideosForNewRide();
+		myVideoStage.stopPlayingVideos();
 	}
 }
