@@ -154,4 +154,8 @@ public class Controller extends Application implements Observer {
 		myVideoManager.resetVideosForNewRide();
 		myVideoStage.stopPlayingVideos();
 	}
+
+	public String getInitials() {
+		return GSON_READER.getProfileInfo().getInitials();
+	}
 }

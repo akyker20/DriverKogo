@@ -1,5 +1,9 @@
 package gui.control;
 
+import java.util.Observable;
+import java.util.Observer;
+
+import utilities.Validator;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,8 +12,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import control.Controller;
 
-public class KogoControlScene extends ControlScene {
+public class KogoControlScene extends ControlScene implements Observer {
 	
+	private static final String VALIDATION_MSG = "Validate that you are finished driving. This will lock the folder and you will no longer be able to show videos.";
+
 	private static final String TITLE = "Ride in Progress";
 	
 	private Button myEndRideButton;
@@ -44,13 +50,29 @@ public class KogoControlScene extends ControlScene {
 		Button startNewRideBtn = new Button("Start New Ride");
 		startNewRideBtn.setOnAction(event -> myStage.showRideStarterScene());
 		Button finishDrivingBtn = new Button("Finish Driving");
-		finishDrivingBtn.setOnAction(event -> myControl.finishDriving());
+		finishDrivingBtn.setOnAction(event -> this.handleFinishDrivingClick());
 		myOptionsHolder.getChildren().addAll(startNewRideBtn, finishDrivingBtn);
 	}
 	
+	private void handleFinishDrivingClick() {
+		Validator finishedValidator = new Validator(myControl.getInitials(), VALIDATION_MSG);
+		finishedValidator.addObserver(this);
+	}
+
+	/**
+	 * Called before this scene is shown to the user (after every ride).
+	 */
 	public void reset() {
 		myOptionsHolder.getChildren().clear();
 		myOptionsHolder.getChildren().add(myEndRideButton);
+	}
+
+	/**
+	 * Called when the driver validates that they would like to finish driving.
+	 */
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		myControl.finishDriving();	
 	}
 
 }
