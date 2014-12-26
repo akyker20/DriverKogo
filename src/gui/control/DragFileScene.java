@@ -76,6 +76,8 @@ public class DragFileScene extends ControlScene {
 
 	private boolean isCorrectDrivingDay(String filePath) {
 		boolean isCorrectDay = filePath.contains(getRequiredDirName());
+		System.out.println(filePath);
+		System.out.println(getRequiredDirName());
 		if (!isCorrectDay) {
 			new ErrorPopup(WRONG_DEL_DAY_ERROR_MSG);
 		}
