@@ -42,8 +42,8 @@ public class VideoManager {
 		return !this.getPlayableVideos().isEmpty();
 	}
 
-	public void updateVideoJson() {
-		Controller.GSON_WRITER.updateVideoJson(myJsonVideoFile, myVideoList);	
+	public void updateVideoJson(ActiveVideo videoCompleted) {
+		Controller.GSON_WRITER.updateVideoJson(myJsonVideoFile, myVideoList, videoCompleted);	
 	}
 
 	public void resetVideosForNewRide() {

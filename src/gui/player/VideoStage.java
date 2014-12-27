@@ -1,9 +1,8 @@
 package gui.player;
 
-import video.ActiveVideo;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import video.ActiveVideo;
 import control.Controller;
 
 public class VideoStage extends Stage {

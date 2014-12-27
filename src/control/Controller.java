@@ -30,7 +30,8 @@ import video.VideoManager;
  */
 public class Controller extends Application implements Observer {
 
-	private static final String COPY_DRIVER_SESSION_ERROR = "Could not copy driver session file to desktop. "
+	private static final String COPY_DRIVER_SESSION_ERROR = 
+			"Could not copy driver session file to desktop. "
 			+ "Don't panic, just call Austin at 317-979-7549";
 	public static final GSONFileReader GSON_READER = new GSONFileReader();
 	public static final GSONFileWriter GSON_WRITER = new GSONFileWriter();
@@ -49,7 +50,6 @@ public class Controller extends Application implements Observer {
 	@Override
 	public void start(Stage stage) {
 		myVideoStage = new VideoStage(this);
-		myVideoStage.setTitle("Video Stage");
 		myControlStage = new ControlStage(this);
 	}
 
@@ -62,6 +62,7 @@ public class Controller extends Application implements Observer {
 		myVideoManager = new VideoManager(jsonVideoFile);
 		myJsonVideoFile = jsonVideoFile;
 		myControlStage.selectDrivingScene(myVideoManager.canSelectVideo());
+		GSON_WRITER.writeStartTimeToFile(jsonVideoFile);
 	}
 
 	public void startRide(int numPassengers) {
@@ -95,7 +96,7 @@ public class Controller extends Application implements Observer {
 	 */
 	public void completedVideoDuringRide(ActiveVideo videoCompleted) {
 		videoCompleted.addViews(myNumPassengers);
-		myVideoManager.updateVideoJson();
+		myVideoManager.updateVideoJson(videoCompleted);
 		playAnotherVideo();
 	}
 
