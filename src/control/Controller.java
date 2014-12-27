@@ -100,8 +100,9 @@ public class Controller extends Application implements Observer {
 	}
 
 	public void finishDriving() {
-		myVideoManager.terminateVideoDeliverable();
-		saveDriverSessionFileToDesktop();
+		String fileName = this.getNewFileEnding();
+		myVideoManager.terminateVideoDeliverable(fileName);
+		saveDriverSessionFileToDesktop(fileName);
 		myControlStage.showFinishedDrivingScene();
 	}
 
@@ -110,9 +111,9 @@ public class Controller extends Application implements Observer {
 		return info != null;
 	}
 
-	private void saveDriverSessionFileToDesktop() {
+	private void saveDriverSessionFileToDesktop(String fileName) {
 		File desktopFile = new File(System.getProperty("user.home")
-				+ "/Desktop/" + getNewFileEnding());
+				+ "/Desktop/" + fileName);
 		if (desktopFile.exists())
 			desktopFile.setWritable(true);
 		Path desktopPath = desktopFile.toPath();

@@ -3,12 +3,11 @@ package gson;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 import utilities.ErrorPopup;
 import video.ActiveVideo;
-import video.TransferVideoData;
+import video.DriverSessionData;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -17,7 +16,6 @@ import control.ProfileInfo;
 
 public class GSONFileWriter {
 
-	private static final String ERROR_MSG = "File to store videos could not be found.";
 	private static final GsonBuilder GSON_BUILDER = new GsonBuilder();
 
 
@@ -43,9 +41,9 @@ public class GSONFileWriter {
 	}
 
 	public void updateVideoJson(File videoJsonFile, List<ActiveVideo> videos) {
-		TransferVideoData data = new TransferVideoData(videos);
+		DriverSessionData data = new DriverSessionData(videos);
 		writeToFile(videoJsonFile.getPath(), 
-				GSON_BUILDER.create().toJson(data, TransferVideoData.class));	
+				GSON_BUILDER.create().toJson(data, DriverSessionData.class));	
 	}
 
 	public void initializeDriverProfile(String initials) {
@@ -55,9 +53,17 @@ public class GSONFileWriter {
 				GSON_BUILDER.create().toJson(info, ProfileInfo.class));
 	}
 
-	public void terminateDeliverable(File videoJsonFile, TransferVideoData data) {
+	/**
+	 * @param videoJsonFile
+	 * @param data
+	 * @param finalFileName - the name of the file that the driver session
+	 * will be saved to. This file will appear on the driver's desktop after
+	 * they finish driving.
+	 */
+	public void terminateDeliverable(File videoJsonFile, DriverSessionData data, String finalFileName) {
 		data.terminate();
+		data.setFileName(finalFileName);
 		writeToFile(videoJsonFile.getPath(), 
-				GSON_BUILDER.create().toJson(data, TransferVideoData.class));		
+				GSON_BUILDER.create().toJson(data, DriverSessionData.class));
 	}
 }

@@ -21,8 +21,8 @@ public class VideoManager {
 	public VideoManager(File videoJsonFile){
 		myRandomGenerator = new Random();
 		myJsonVideoFile = videoJsonFile;
-		TransferVideoData data = 
-				Controller.GSON_READER.readVideosFromJSON(myJsonVideoFile);
+		DriverSessionData data = 
+				Controller.GSON_READER.readDriverSessionData(myJsonVideoFile);
 		myVideoList = data.getVideos();
 		resetVideosForNewRide();
 	}
@@ -51,9 +51,10 @@ public class VideoManager {
 			vid.prepareForNewRide();	
 	}
 
-	public void terminateVideoDeliverable() {
+	public void terminateVideoDeliverable(String fileName) {
 		Controller.GSON_WRITER.terminateDeliverable(myJsonVideoFile, 
-				Controller.GSON_READER.readVideosFromJSON(myJsonVideoFile));
+				Controller.GSON_READER.readDriverSessionData(myJsonVideoFile),
+				fileName);
 	}
 
 	public boolean videoViewsStillExist() {

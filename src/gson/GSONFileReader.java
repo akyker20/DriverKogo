@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import utilities.ErrorPopup;
-import video.TransferVideoData;
+import video.DriverSessionData;
 
 import com.google.gson.GsonBuilder;
 
@@ -21,11 +21,11 @@ public class GSONFileReader {
 	protected static final String PROFILE_PATH = "./src/json/driver_profile.json";
 	private static final GsonBuilder GSON_BUILDER = new GsonBuilder();
 
-	public TransferVideoData readVideosFromJSON(File jsonVideoFile) {
-		TransferVideoData data = null;
+	public DriverSessionData readDriverSessionData(File jsonVideoFile) {
+		DriverSessionData data = null;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(jsonVideoFile));
-			data = GSON_BUILDER.create().fromJson(br, TransferVideoData.class);
+			data = GSON_BUILDER.create().fromJson(br, DriverSessionData.class);
 		} catch (IOException e) {
 			new ErrorPopup(READ_ERROR_MSG);
 		}
@@ -33,7 +33,7 @@ public class GSONFileReader {
 	}
 	
 	public boolean isDeliverableTerminated(File jsonVideoFile) {
-		return readVideosFromJSON(jsonVideoFile).isTerminated();
+		return readDriverSessionData(jsonVideoFile).isTerminated();
 	}
 
 	public ProfileInfo getProfileInfo() {
