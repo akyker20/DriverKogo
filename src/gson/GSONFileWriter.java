@@ -3,10 +3,8 @@ package gson;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import utilities.ErrorPopup;
-import video.ActiveVideo;
 import video.DriverSessionData;
 
 import com.google.gson.GsonBuilder;
@@ -31,12 +29,9 @@ public class GSONFileWriter {
 		}
 	}
 
-	public void updateVideoJson(File videoJsonFile, List<ActiveVideo> videos, 
-			ActiveVideo videoCompleted) {
-		DriverSessionData data = new DriverSessionData(videos);
-		data.completedVideo(videoCompleted);
+	public void updateDriverSessionData(File videoJsonFile, DriverSessionData dataToWrite) {
 		writeToFile(videoJsonFile.getPath(), 
-				GSON_BUILDER.create().toJson(data, DriverSessionData.class));	
+				GSON_BUILDER.create().toJson(dataToWrite, DriverSessionData.class));	
 	}
 
 	public void initializeDriverProfile(String initials) {

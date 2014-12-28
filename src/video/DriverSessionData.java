@@ -21,7 +21,8 @@ public class DriverSessionData {
 	private Date myStartTime;
 	
 	public DriverSessionData(List<ActiveVideo> videos) {
-		this(videos, LocalDate.now());
+		myTerminationStatus = false;
+		myVideos = videos;
 	}
 	
 	public DriverSessionData(List<ActiveVideo> videos, LocalDate date) {
@@ -86,8 +87,11 @@ public class DriverSessionData {
 		return myVideos.stream().map(vid->vid.getMyPlays()*vid.getMyLength()).reduce(0, (a, b) -> a+b);
 	}
 
-	public void completedVideo(ActiveVideo videoCompleted) {
-		myDriverNumRides++;
+	public void incrementDriverSeconds(ActiveVideo videoCompleted) {
 		myDriverSeconds += videoCompleted.getMyLength();		
+	}
+	
+	public void incrementDriverRides() {
+		myDriverNumRides++;
 	}
 }

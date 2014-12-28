@@ -43,12 +43,23 @@ public class VideoManager {
 	}
 
 	public void updateVideoJson(ActiveVideo videoCompleted) {
-		Controller.GSON_WRITER.updateVideoJson(myJsonVideoFile, myVideoList, videoCompleted);	
+		DriverSessionData data = Controller.GSON_READER.readDriverSessionData(myJsonVideoFile);
+		data.getVideos().remove(videoCompleted);
+		data.getVideos().add(videoCompleted);
+		data.incrementDriverSeconds(videoCompleted);
+		Controller.GSON_WRITER.updateDriverSessionData(myJsonVideoFile, data);	
 	}
 
-	public void resetVideosForNewRide() {
+	public void prepareForNewRide() {
+		DriverSessionData data = Controller.GSON_READER.readDriverSessionData(myJsonVideoFile);
+		data.incrementDriverRides();
+		Controller.GSON_WRITER.updateDriverSessionData(myJsonVideoFile, data);
+		resetVideosForNewRide();	
+	}
+
+	private void resetVideosForNewRide() {
 		for(ActiveVideo vid:myVideoList)
-			vid.prepareForNewRide();	
+			vid.prepareForNewRide();
 	}
 
 	public void terminateVideoDeliverable(String fileName) {

@@ -87,7 +87,6 @@ public class Controller extends Application implements Observer {
 		else if(!myVideoManager.videoViewsStillExist()) {
 			myControlStage.showNoMorePlayableVideosScene();
 		}
-		myVideoManager.resetVideosForNewRide();
 		myVideoStage.showKogoScene();
 	}
 
@@ -153,7 +152,7 @@ public class Controller extends Application implements Observer {
 	}
 
 	public void endCurrentRide() {
-		myVideoManager.resetVideosForNewRide();
+		myVideoManager.prepareForNewRide();
 		myVideoStage.stopPlayingVideos();
 	}
 
