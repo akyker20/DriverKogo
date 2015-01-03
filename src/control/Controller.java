@@ -32,7 +32,7 @@ public class Controller extends Application implements Observer {
 
 	private static final String COPY_DRIVER_SESSION_ERROR = 
 			"Could not copy driver session file to desktop. "
-			+ "Don't panic, just call Austin at 317-979-7549";
+					+ "Don't panic, just call Austin at 317-979-7549";
 	public static final GSONFileReader GSON_READER = new GSONFileReader();
 	public static final GSONFileWriter GSON_WRITER = new GSONFileWriter();
 
@@ -69,7 +69,8 @@ public class Controller extends Application implements Observer {
 		myNumPassengers = numPassengers;
 		String initialsKey = GSON_READER.getProfileInfo().getInitials();
 		Validator val = new Validator(initialsKey, "Please validate this ride has " +
-		numPassengers + " passengers.");
+				numPassengers + " passengers. Enter your initials.", 
+				myControlStage.getX(), myControlStage.getY());
 		val.addObserver(this);
 	}
 

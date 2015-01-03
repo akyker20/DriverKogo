@@ -76,8 +76,6 @@ public class DragFileScene extends ControlScene {
 
 	private boolean isCorrectDrivingDay(String filePath) {
 		boolean isCorrectDay = filePath.contains(getRequiredDirName());
-		System.out.println(filePath);
-		System.out.println(getRequiredDirName());
 		if (!isCorrectDay) {
 			new ErrorPopup(WRONG_DEL_DAY_ERROR_MSG);
 		}
@@ -105,13 +103,13 @@ public class DragFileScene extends ControlScene {
 
 	private CharSequence getRequiredDirName() {
 		LocalDateTime now = LocalDateTime.now();
-		String date = now.getMonthValue() + "-"
-				+ formatDayToHaveTwoDigits(now.getDayOfMonth()) + "-"
+		String date = formatNumToHaveTwoDigits(now.getMonthValue()) + "-"
+				+ formatNumToHaveTwoDigits(now.getDayOfMonth()) + "-"
 				+ now.getYear();
 		return "deliverable_".concat(date);
 	}
 
-	private String formatDayToHaveTwoDigits(int dayOfMonth) {
+	private String formatNumToHaveTwoDigits(int dayOfMonth) {
 		if (dayOfMonth < 10)
 			return "0" + dayOfMonth;
 		return "" + dayOfMonth;

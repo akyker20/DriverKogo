@@ -17,7 +17,7 @@ public class Validator extends Observable {
 	private static final int VALIDATOR_WIDTH = 250;
 	private static final int VALIDATOR_HEIGHT = 200;
 	
-	public Validator(String key, String message) {
+	public Validator(String key, String message, double stageX, double stageY) {
 		Stage stage = new Stage();
 		stage.setTitle("Validation");
 		VBox box = new VBox(10);
@@ -40,6 +40,8 @@ public class Validator extends Observable {
 		Scene scene = new Scene(box, VALIDATOR_WIDTH, VALIDATOR_HEIGHT);
 		stage.setScene(scene);
 		stage.setResizable(false);
+		stage.setX(stageX);
+		stage.setY(stageY);
 		stage.show();
 	}
 }

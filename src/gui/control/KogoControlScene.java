@@ -13,11 +13,11 @@ import javafx.scene.layout.VBox;
 import control.Controller;
 
 public class KogoControlScene extends ControlScene implements Observer {
-	
+
 	private static final String VALIDATION_MSG = "Validate that you are finished driving. This will lock the folder and you will no longer be able to show videos.";
 
 	private static final String TITLE = "Ride in Progress";
-	
+
 	private Button myEndRideButton;
 	private Controller myControl;
 	private ControlStage myStage;
@@ -39,7 +39,7 @@ public class KogoControlScene extends ControlScene implements Observer {
 		container.getChildren().addAll(label, myOptionsHolder);
 		root.setCenter(container);
 	}
-	
+
 	private void endCurrentRide() {
 		myControl.endCurrentRide();
 		this.showDriverOptions();
@@ -53,9 +53,10 @@ public class KogoControlScene extends ControlScene implements Observer {
 		finishDrivingBtn.setOnAction(event -> this.handleFinishDrivingClick());
 		myOptionsHolder.getChildren().addAll(startNewRideBtn, finishDrivingBtn);
 	}
-	
+
 	private void handleFinishDrivingClick() {
-		Validator finishedValidator = new Validator(myControl.getInitials(), VALIDATION_MSG);
+		Validator finishedValidator = new Validator(myControl.getInitials(), VALIDATION_MSG,
+				myStage.getX(), myStage.getY());
 		finishedValidator.addObserver(this);
 	}
 

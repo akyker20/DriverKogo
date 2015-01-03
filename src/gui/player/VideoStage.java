@@ -40,6 +40,5 @@ public class VideoStage extends Stage {
 	public void stopPlayingVideos() {
 		myVideoScene.pause();
 		this.showKogoScene();
-		
 	}
 }	
