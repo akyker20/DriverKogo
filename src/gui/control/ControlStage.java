@@ -26,7 +26,7 @@ public class ControlStage extends Stage {
 		myKogoControlScene = new KogoControlScene(new BorderPane(), this, myControl);
 		myDragFileScene = new DragFileScene(new BorderPane(), myControl);
 		myProfileSetupScene = new ProfileSetupScene(new BorderPane(), myControl);
-		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane());
+		myNotEnoughVideosScene = new NotEnoughVideosScene(new BorderPane(), myControl);
 		myRideStarterScene = new RideStarterScene(new BorderPane(), myControl);
 		myFinishedDrivingScene = new FinishedDrivingScene(new BorderPane());
 	}

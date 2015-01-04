@@ -37,7 +37,7 @@ public class GSONFileWriter {
 	public void initializeDriverProfile(String initials) {
 		ProfileInfo info = new ProfileInfo(initials);
 		info.initialize();
-		writeToFile(GSONFileReader.PROFILE_PATH,
+		writeToFile(GSONFileReader.PROFILE_FILE,
 				GSON_BUILDER.create().toJson(info, ProfileInfo.class));
 	}
 
@@ -56,7 +56,6 @@ public class GSONFileWriter {
 	}
 
 	public void writeStartTimeToFile(File driverSessionFile) {
-		System.out.println("Wrote to file");
 		DriverSessionData data = Controller.GSON_READER.readDriverSessionData(driverSessionFile);
 		data.setStartTime();
 		writeToFile(driverSessionFile.getPath(), 

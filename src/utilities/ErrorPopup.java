@@ -16,7 +16,7 @@ import javafx.stage.Stage;
  */
 public class ErrorPopup extends Stage {
 
-	private static final String ERROR_FILE_LOC = "./src/utilities/error.PNG";
+	private static final String ERROR_IMG = "error.PNG";
 	private static final int ERROR_POPUP_WIDTH = 260;
 	private static final int ERROR_POPUP_HEIGHT = 225;
 	private static final String TITLE = "Error";
@@ -24,8 +24,9 @@ public class ErrorPopup extends Stage {
 	public ErrorPopup(String message) {
 		VBox box = new VBox(10);
 		box.setAlignment(Pos.CENTER);
-		ImageView imgView = StringToImageViewConverter.getImageView(
-				ERROR_POPUP_WIDTH, ERROR_POPUP_HEIGHT, ERROR_FILE_LOC);
+		ImageView imgView = FileToImageViewConverter.getImageView(
+				ERROR_POPUP_WIDTH, ERROR_POPUP_HEIGHT, 
+				getClass().getResourceAsStream(ERROR_IMG));
 		Label label = new Label(message);
 		label.setPrefWidth(ERROR_POPUP_WIDTH);
 		label.setWrapText(true);
